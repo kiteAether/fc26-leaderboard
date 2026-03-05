@@ -2,63 +2,212 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FC26 Admin</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 15px;}
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background: #ffe600; }
-    input { width: 70px; padding: 6px; }
-    input.name { width: 180px; }
-    .rowform { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .btn { padding: 6px 10px; cursor:pointer; }
-    .topbar { display:flex; justify-content:space-between; align-items:center; }
+    :root{
+      --bg:#0f1115;
+      --panel:#1b1e24;
+      --panel2:#151820;
+      --text:#ffffff;
+      --muted:#9aa0a6;
+      --line:rgba(255,255,255,.10);
+      --accent:#9be15d;   /* green */
+      --danger:#ef4444;   /* red */
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(900px 450px at 30% 0%, rgba(155,225,93,.12), transparent 55%),
+                  radial-gradient(900px 450px at 90% 20%, rgba(255,255,255,.05), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:20px 16px 60px;}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:14px;
+    }
+    .title{
+      display:flex; flex-direction:column; gap:4px;
+    }
+    h1{margin:0; font-size:22px; letter-spacing:.2px}
+    .sub{color:var(--muted); font-size:13px}
+    a{
+      color:var(--text);
+      text-decoration:none;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+    }
+    a:hover{background:rgba(255,255,255,.10)}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .section{
+      padding:14px;
+      border-bottom:1px solid var(--line);
+      background:rgba(27,30,36,.75);
+      backdrop-filter: blur(10px);
+    }
+    .section h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .rowform{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:12px;
+    }
+    input{
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+      font-size:14px;
+      width:90px;
+    }
+    input.name{width:260px}
+    input:focus{
+      border-color:rgba(155,225,93,.55);
+      box-shadow: 0 0 0 3px rgba(155,225,93,.12);
+    }
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn:hover{background:rgba(255,255,255,.12)}
+    .btn.primary{
+      background:rgba(155,225,93,.18);
+      border-color:rgba(155,225,93,.35);
+    }
+    .btn.primary:hover{background:rgba(155,225,93,.24)}
+    .btn.danger{
+      background:rgba(239,68,68,.14);
+      border-color:rgba(239,68,68,.28);
+    }
+    .btn.danger:hover{background:rgba(239,68,68,.20)}
+    .tablewrap{overflow:auto}
+    table{width:100%; border-collapse:separate; border-spacing:0}
+    thead th{
+      position:sticky; top:0;
+      background:rgba(21,24,32,.92);
+      border-bottom:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      padding:12px 10px;
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:12px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      white-space:nowrap;
+      text-align:center;
+    }
+    tbody tr:hover{background:rgba(255,255,255,.04)}
+    td.left{text-align:left}
+    .num{font-variant-numeric: tabular-nums;}
+    .pts{font-weight:900; color:var(--accent)}
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    @media (max-width:720px){
+      input.name{width:100%}
+      input{width:84px}
+    }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <h2>Admin - Edit Leaderboard</h2>
-    <a href="/">Back to Leaderboard</a>
-  </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">
+        <h1>Admin — Edit Leaderboard</h1>
+        <div class="sub">Update W/D/L/F/A. P, GD and PTS are calculated automatically.</div>
+      </div>
+      <a href="/">Back to Leaderboard</a>
+    </div>
 
-  <h3>Add Team</h3>
-  <form class="rowform" method="post" action="/admin/add?key={{ key }}">
-    <input class="name" name="name" placeholder="Team name" required />
-    <button class="btn" type="submit">Add</button>
-  </form>
-
-  <h3 style="margin-top:20px;">Edit Teams</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Rank</th><th>Name</th><th>P</th><th>GD</th><th>PTS</th>
-        <th>W</th><th>D</th><th>L</th><th>F</th><th>A</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for r in table %}
-      <tr>
-        <form method="post" action="/admin/update/{{ r.id }}?key={{ key }}">
-          <td>{{ r.rank }}</td>
-          <td><input class="name" name="name" value="{{ r.name }}" required /></td>
-          <td>{{ r.p }}</td>
-          <td>{{ r.gd }}</td>
-          <td><b>{{ r.pts }}</b></td>
-          <td><input name="w" type="number" value="{{ r.w }}" min="0" /></td>
-          <td><input name="d" type="number" value="{{ r.d }}" min="0" /></td>
-          <td><input name="l" type="number" value="{{ r.l }}" min="0" /></td>
-          <td><input name="f" type="number" value="{{ r.f }}" min="0" /></td>
-          <td><input name="a" type="number" value="{{ r.a }}" min="0" /></td>
-          <td>
-            <button class="btn" type="submit">Save</button>
+    <div class="card">
+      <div class="section">
+        <h2>Add Team</h2>
+        <form class="rowform" method="post" action="/admin/add?key={{ key }}">
+          <input class="name" name="name" placeholder="Team / Player name" required />
+          <input name="w" type="number" value="0" min="0" />
+          <input name="d" type="number" value="0" min="0" />
+          <input name="l" type="number" value="0" min="0" />
+          <input name="f" type="number" value="0" min="0" />
+          <input name="a" type="number" value="0" min="0" />
+          <button class="btn primary" type="submit">Add</button>
         </form>
-            <form method="post" action="/admin/delete/{{ r.id }}?key={{ key }}" style="display:inline;">
-              <button class="btn" type="submit" onclick="return confirm('Delete this team?')">Delete</button>
-            </form>
-          </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        <div class="hint">Tip: Tie-break uses PTS → GD → F → Name.</div>
+      </div>
+
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th><th style="text-align:left;">Name</th><th>P</th><th>GD</th><th>PTS</th>
+              <th>W</th><th>D</th><th>L</th><th>F</th><th>A</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in table %}
+            <tr>
+              <td class="num">{{ r.rank }}</td>
+
+              <td class="left">
+                <form method="post" action="/admin/update/{{ r.id }}?key={{ key }}" style="display:flex; gap:10px; align-items:center;">
+                  <input class="name" name="name" value="{{ r.name }}" required />
+              </td>
+
+              <td class="num">{{ r.p }}</td>
+              <td class="num">{{ r.gd }}</td>
+              <td class="num pts">{{ r.pts }}</td>
+
+              <td><input name="w" type="number" value="{{ r.w }}" min="0" /></td>
+              <td><input name="d" type="number" value="{{ r.d }}" min="0" /></td>
+              <td><input name="l" type="number" value="{{ r.l }}" min="0" /></td>
+              <td><input name="f" type="number" value="{{ r.f }}" min="0" /></td>
+              <td><input name="a" type="number" value="{{ r.a }}" min="0" /></td>
+
+              <td>
+                  <button class="btn primary" type="submit">Save</button>
+                </form>
+
+                <form method="post" action="/admin/delete/{{ r.id }}?key={{ key }}" style="display:inline;">
+                  <button class="btn danger" type="submit" onclick="return confirm('Delete this team?')">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
