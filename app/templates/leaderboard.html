@@ -1,171 +1,283 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>FC26 Leaderboard</title>
+  <meta charset="utf-8">
+  <!-- IMPORTANT: makes iPhone scale correctly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FC26 Leaderboard</title>
 
-<style>
+  <style>
+    :root{
+      --bg:#0f1115;
+      --panel:#1b1e24;
+      --panel2:#151820;
+      --text:#ffffff;
+      --muted:#9aa0a6;
+      --line:rgba(255,255,255,.10);
+      --accent:#9be15d;   /* green */
+      --gold:#fbbf24;
+      --silver:#cbd5e1;
+      --bronze:#fb923c;
+      --radius:16px;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(900px 450px at 30% 0%, rgba(155,225,93,.12), transparent 55%),
+                  radial-gradient(900px 450px at 90% 20%, rgba(255,255,255,.05), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
 
-body{
-    margin:0;
-    font-family:system-ui;
-    background:#0f1115;
-    color:white;
-}
+    /* Container is mobile-first */
+    .container{
+      max-width: 560px;      /* ideal for phones */
+      margin: 0 auto;
+      padding: 18px 14px 50px;
+    }
 
-.container{
-    max-width:500px;
-    margin:auto;
-    padding:20px;
-}
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .title{
+      font-size:24px;
+      margin:0;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
 
-h1{
-    text-align:center;
-    margin-bottom:30px;
-}
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      padding:10px 12px;
+      border-radius:999px;
+      color:var(--text);
+      text-decoration:none;
+      font-size:13px;
+      white-space:nowrap;
+    }
 
-.podium{
-    display:flex;
-    justify-content:space-around;
-    margin-bottom:30px;
-}
+    /* Podium (top 3) */
+    .podiumCard{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      margin-bottom:14px;
+    }
+    .podium{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+      align-items:end;
+    }
+    .podium .player{
+      text-align:center;
+      padding:10px 8px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .avatar{
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 auto 8px;
+      background:rgba(255,255,255,.06);
+      border:2px solid rgba(255,255,255,.10);
+      font-weight:900;
+      font-size:18px;
+    }
+    .r1 .avatar{ border-color: rgba(251,191,36,.65); box-shadow:0 0 0 4px rgba(251,191,36,.12); }
+    .r2 .avatar{ border-color: rgba(203,213,225,.65); box-shadow:0 0 0 4px rgba(203,213,225,.10); }
+    .r3 .avatar{ border-color: rgba(251,146,60,.65); box-shadow:0 0 0 4px rgba(251,146,60,.10); }
 
-.player{
-    text-align:center;
-}
+    .pname{
+      font-size:13px;
+      font-weight:800;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .ppoints{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--accent);
+      font-weight:800;
+    }
 
-.avatar{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    background:#333;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:26px;
-}
+    /* List */
+    .listCard{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .listHeader{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background:rgba(21,24,32,.85);
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
 
-.first{
-    border:3px solid gold;
-}
+    /* Row is a responsive "card row" */
+    .row{
+      display:grid;
+      grid-template-columns: 44px 1fr auto;
+      gap:10px;
+      align-items:center;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.07);
+    }
+    .row:last-child{border-bottom:none;}
+    .row:hover{background:rgba(255,255,255,.04);}
 
-.second{
-    border:3px solid silver;
-}
+    .rank{
+      width:44px;
+      height:34px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      font-weight:900;
+      font-variant-numeric: tabular-nums;
+    }
+    .row.r1 .rank{ border-color: rgba(251,191,36,.40); background:rgba(251,191,36,.10); }
+    .row.r2 .rank{ border-color: rgba(203,213,225,.35); background:rgba(203,213,225,.08); }
+    .row.r3 .rank{ border-color: rgba(251,146,60,.35); background:rgba(251,146,60,.08); }
 
-.third{
-    border:3px solid #cd7f32;
-}
+    .nameBlock{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .nameLine{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      min-width:0;
+    }
+    .teamName{
+      font-weight:900;
+      font-size:14px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .pts{
+      font-weight:900;
+      color:var(--accent);
+      font-variant-numeric: tabular-nums;
+      white-space:nowrap;
+    }
+    .stats{
+      color:var(--muted);
+      font-size:12px;
+      font-variant-numeric: tabular-nums;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      padding:4px 8px;
+      border-radius:999px;
+    }
 
-.player-name{
-    font-size:14px;
-    margin-top:8px;
-}
-
-.points{
-    font-size:12px;
-    color:#9be15d;
-}
-
-.list{
-    margin-top:20px;
-}
-
-.row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:#1b1e24;
-    padding:12px;
-    border-radius:12px;
-    margin-bottom:10px;
-}
-
-.rank{
-    width:25px;
-}
-
-.team{
-    flex:1;
-}
-
-.stats{
-    font-size:12px;
-    color:#9aa0a6;
-}
-
-.pts{
-    font-weight:bold;
-}
-
-</style>
-
+    /* Desktop enhancement */
+    @media (min-width: 900px){
+      .container{ max-width: 980px; padding: 26px 18px 70px; }
+      .title{ font-size:28px; }
+      .podiumCard{ padding:18px; }
+      .avatar{ width:74px; height:74px; font-size:20px; }
+      .row{ grid-template-columns: 56px 1fr auto; padding:14px 16px; }
+      .rank{ width:56px; height:38px; }
+      .teamName{ font-size:15px; }
+      .stats{ font-size:13px; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
 
-<div class="container">
+    <div class="header">
+      <div>
+        <h1 class="title">FC26 Leaderboard</h1>
+        <p class="sub">Auto-ranked by PTS → GD → F</p>
+      </div>
 
-<h1>FC26 Leaderboard</h1>
+      <!-- optional: keep or remove -->
+      <a class="pill" href="/api/leaderboard" target="_blank" rel="noopener">API</a>
+    </div>
 
-<div class="podium">
+    <!-- Podium -->
+    <div class="podiumCard">
+      <div class="podium">
+        {% for r in table[:3] %}
+        <div class="player r{{ r.rank }}">
+          <div class="avatar">{{ r.rank }}</div>
+          <div class="pname">{{ r.name }}</div>
+          <div class="ppoints">{{ r.pts }} pts</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
 
-{% for r in table[:3] %}
+    <!-- List -->
+    <div class="listCard">
+      <div class="listHeader">Standings</div>
 
-<div class="player">
+      {% for r in table %}
+      <div class="row r{{ r.rank }}">
+        <div class="rank">{{ r.rank }}</div>
 
-<div class="avatar 
-{% if r.rank == 1 %}first
-{% elif r.rank == 2 %}second
-{% elif r.rank == 3 %}third
-{% endif %}">
-{{ r.rank }}
-</div>
+        <div class="nameBlock">
+          <div class="nameLine">
+            <div class="teamName">{{ r.name }}</div>
+            <div class="pts">{{ r.pts }}</div>
+          </div>
 
-<div class="player-name">
-{{ r.name }}
-</div>
+          <div class="stats">
+            <span class="chip">W {{ r.w }}</span>
+            <span class="chip">D {{ r.d }}</span>
+            <span class="chip">L {{ r.l }}</span>
+            <span class="chip">GD {{ r.gd }}</span>
+            <span class="chip">F {{ r.f }}</span>
+            <span class="chip">A {{ r.a }}</span>
+          </div>
+        </div>
 
-<div class="points">
-{{ r.pts }} pts
-</div>
+        <!-- right spacer column (keeps layout clean) -->
+        <div></div>
+      </div>
+      {% endfor %}
 
-</div>
+    </div>
 
-{% endfor %}
-
-</div>
-
-<div class="list">
-
-{% for r in table %}
-
-<div class="row">
-
-<div class="rank">
-{{ r.rank }}
-</div>
-
-<div class="team">
-{{ r.name }}
-
-<div class="stats">
-W {{ r.w }} • D {{ r.d }} • L {{ r.l }} • GD {{ r.gd }}
-</div>
-
-</div>
-
-<div class="pts">
-{{ r.pts }}
-</div>
-
-</div>
-
-{% endfor %}
-
-</div>
-
-</div>
-
+  </div>
 </body>
 </html>
