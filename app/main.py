@@ -106,3 +106,6 @@ def api_get_teams(db: Session = Depends(get_db)):
         )
         for r in table
     ]
+@app.get("/api/leaderboard", response_model=list[schemas.TeamOut])
+def api_leaderboard(db: Session = Depends(get_db)):
+    return api_get_teams(db)
