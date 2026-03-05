@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>FC26 Leaderboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background: #ffe600; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; }
+    a { text-decoration:none; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h2>FC26 Leaderboard</h2>
+    <a href="/admin">Admin (Edit)</a>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th><th>Name</th><th>P</th><th>GD</th><th>PTS</th>
+        <th>W</th><th>D</th><th>L</th><th>F</th><th>A</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in table %}
+      <tr>
+        <td>{{ r.rank }}</td>
+        <td style="text-align:left">{{ r.name }}</td>
+        <td>{{ r.p }}</td>
+        <td>{{ r.gd }}</td>
+        <td><b>{{ r.pts }}</b></td>
+        <td>{{ r.w }}</td>
+        <td>{{ r.d }}</td>
+        <td>{{ r.l }}</td>
+        <td>{{ r.f }}</td>
+        <td>{{ r.a }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
