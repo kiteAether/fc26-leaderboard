@@ -1,3 +1,5 @@
+import os
+from fastapi import Query, HTTPException
 from fastapi import FastAPI, Depends, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -47,14 +49,21 @@ def leaderboard_page(request: Request, db: Session = Depends(get_db)):
 
 
 @app.get("/admin", response_class=HTMLResponse)
-def admin_page(request: Request, db: Session = Depends(get_db)):
+def admin_page(request: Request, key: str = Query(None), db: Session = Depends(get_db)):
+    if key != os.getenv("ADMIN_KEY"):
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     teams = crud.list_teams(db)
     table = compute_table(teams)
-    return templates.TemplateResponse("admin.html", {"request": request, "table": table})
+    return templates.TemplateResponse("admin.html", {"request": request, "table": table, "key": key})
 
+def require_admin(key: str | None):
+    if key != os.getenv("ADMIN_KEY"):
+        raise HTTPException(status_code=403, detail="Not authorized")
 
 @app.post("/admin/add")
 def admin_add_team(
+    key: str = Query(None),
     name: str = Form(...),
     w: int = Form(0),
     d: int = Form(0),
@@ -63,13 +72,15 @@ def admin_add_team(
     a: int = Form(0),
     db: Session = Depends(get_db),
 ):
+    require_admin(key)
     crud.create_team(db, schemas.TeamCreate(name=name, w=w, d=d, l=l, f=f, a=a))
-    return RedirectResponse(url="/admin", status_code=303)
+    return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
 
 @app.post("/admin/update/{team_id}")
 def admin_update_team(
     team_id: int,
+    key: str = Query(None),
     name: str = Form(...),
     w: int = Form(0),
     d: int = Form(0),
@@ -78,18 +89,20 @@ def admin_update_team(
     a: int = Form(0),
     db: Session = Depends(get_db),
 ):
+    require_admin(key)
     team = crud.update_team(db, team_id, schemas.TeamUpdate(name=name, w=w, d=d, l=l, f=f, a=a))
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
-    return RedirectResponse(url="/admin", status_code=303)
+    return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
 
 @app.post("/admin/delete/{team_id}")
-def admin_delete_team(team_id: int, db: Session = Depends(get_db)):
+def admin_delete_team(team_id: int, key: str = Query(None), db: Session = Depends(get_db)):
+    require_admin(key)
     ok = crud.delete_team(db, team_id)
     if not ok:
         raise HTTPException(status_code=404, detail="Team not found")
-    return RedirectResponse(url="/admin", status_code=303)
+    return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
 
 # ---------- API ----------

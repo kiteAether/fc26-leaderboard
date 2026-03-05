@@ -22,7 +22,7 @@
   </div>
 
   <h3>Add Team</h3>
-  <form class="rowform" method="post" action="/admin/add">
+  <form class="rowform" method="post" action="/admin/add?key={{ key }}">
     <input class="name" name="name" placeholder="Team name" required />
     <input name="w" type="number" value="0" min="0" />
     <input name="d" type="number" value="0" min="0" />
@@ -43,7 +43,7 @@
     <tbody>
       {% for r in table %}
       <tr>
-        <form method="post" action="/admin/update/{{ r.id }}">
+        <form method="post" action="/admin/update/{{ r.id }}?key={{ key }}">
           <td>{{ r.rank }}</td>
           <td><input class="name" name="name" value="{{ r.name }}" required /></td>
           <td>{{ r.p }}</td>
@@ -57,7 +57,7 @@
           <td>
             <button class="btn" type="submit">Save</button>
         </form>
-            <form method="post" action="/admin/delete/{{ r.id }}" style="display:inline;">
+            <form method="post" action="/admin/delete/{{ r.id }}?key={{ key }}" style="display:inline;">
               <button class="btn" type="submit" onclick="return confirm('Delete this team?')">Delete</button>
             </form>
           </td>
