@@ -10,7 +10,6 @@ class Team(Base):
     w = Column(Integer, default=0)
     d = Column(Integer, default=0)
     l = Column(Integer, default=0)
-
     f = Column(Integer, default=0)  # goals for
     a = Column(Integer, default=0)  # goals against 
 
