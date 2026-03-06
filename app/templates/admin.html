@@ -12,8 +12,8 @@
       --text:#ffffff;
       --muted:#9aa0a6;
       --line:rgba(255,255,255,.10);
-      --accent:#9be15d;   /* green */
-      --danger:#ef4444;   /* red */
+      --accent:#9be15d;
+      --danger:#ef4444;
       --shadow: 0 18px 50px rgba(0,0,0,.45);
       --radius:16px;
     }
@@ -27,13 +27,8 @@
       color:var(--text);
     }
     .wrap{max-width:980px; margin:0 auto; padding:20px 16px 60px;}
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; margin-bottom:14px;
-    }
-    .title{
-      display:flex; flex-direction:column; gap:4px;
-    }
+    .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}
+    .title{display:flex; flex-direction:column; gap:4px;}
     h1{margin:0; font-size:22px; letter-spacing:.2px}
     .sub{color:var(--muted); font-size:13px}
     a{
@@ -52,26 +47,9 @@
       box-shadow:var(--shadow);
       overflow:hidden;
     }
-    .section{
-      padding:14px;
-      border-bottom:1px solid var(--line);
-      background:rgba(27,30,36,.75);
-      backdrop-filter: blur(10px);
-    }
-    .section h2{
-      margin:0;
-      font-size:14px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
-    .rowform{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:12px;
-    }
+    .section{padding:14px; border-bottom:1px solid var(--line); background:rgba(27,30,36,.75); backdrop-filter: blur(10px);}
+    .section h2{margin:0; font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+    .rowform{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px;}
     input{
       background:rgba(255,255,255,.06);
       border:1px solid var(--line);
@@ -83,10 +61,8 @@
       width:90px;
     }
     input.name{width:260px}
-    input:focus{
-      border-color:rgba(155,225,93,.55);
-      box-shadow: 0 0 0 3px rgba(155,225,93,.12);
-    }
+    input.url{width:360px}
+    input:focus{border-color:rgba(155,225,93,.55); box-shadow: 0 0 0 3px rgba(155,225,93,.12);}
     .btn{
       padding:10px 12px;
       border-radius:12px;
@@ -97,15 +73,9 @@
       font-weight:700;
     }
     .btn:hover{background:rgba(255,255,255,.12)}
-    .btn.primary{
-      background:rgba(155,225,93,.18);
-      border-color:rgba(155,225,93,.35);
-    }
+    .btn.primary{background:rgba(155,225,93,.18); border-color:rgba(155,225,93,.35);}
     .btn.primary:hover{background:rgba(155,225,93,.24)}
-    .btn.danger{
-      background:rgba(239,68,68,.14);
-      border-color:rgba(239,68,68,.28);
-    }
+    .btn.danger{background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.28);}
     .btn.danger:hover{background:rgba(239,68,68,.20)}
     .tablewrap{overflow:auto}
     table{width:100%; border-collapse:separate; border-spacing:0}
@@ -120,24 +90,19 @@
       padding:12px 10px;
       white-space:nowrap;
     }
-    tbody td{
-      padding:12px 10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      white-space:nowrap;
-      text-align:center;
-    }
+    tbody td{padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.08); white-space:nowrap; text-align:center; vertical-align:middle;}
     tbody tr:hover{background:rgba(255,255,255,.04)}
     td.left{text-align:left}
     .num{font-variant-numeric: tabular-nums;}
     .pts{font-weight:900; color:var(--accent)}
-    .hint{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:12px;
-    }
+    .hint{margin-top:10px; color:var(--muted); font-size:12px;}
+    .editHead{display:flex; flex-direction:column; gap:8px; min-width:320px;}
+    .editHead .rowline{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
     @media (max-width:720px){
       input.name{width:100%}
+      input.url{width:100%}
       input{width:84px}
+      .editHead{min-width:220px}
     }
   </style>
 </head>
@@ -156,22 +121,28 @@
         <h2>Add Team</h2>
         <form class="rowform" method="post" action="/admin/add?key={{ key }}">
           <input class="name" name="name" placeholder="Team / Player name" required />
+          <input class="url" name="avatar_url" placeholder="Avatar URL (optional)" />
+
           <input name="w" type="number" value="0" min="0" />
           <input name="d" type="number" value="0" min="0" />
           <input name="l" type="number" value="0" min="0" />
           <input name="f" type="number" value="0" min="0" />
           <input name="a" type="number" value="0" min="0" />
+
           <button class="btn primary" type="submit">Add</button>
         </form>
-        <div class="hint">Tip: Tie-break uses PTS → GD → F → Name.</div>
+        <div class="hint">Tip: Avatar URL should be a direct image link (jpg/png/webp). Tie-break uses PTS → GD → F → Name.</div>
       </div>
 
       <div class="tablewrap">
         <table>
           <thead>
             <tr>
-              <th>Rank</th><th style="text-align:left;">Name</th><th>P</th><th>GD</th><th>PTS</th>
-              <th>W</th><th>D</th><th>L</th><th>F</th><th>A</th><th>Actions</th>
+              <th>Rank</th>
+              <th style="text-align:left;">Name + Avatar</th>
+              <th>P</th><th>GD</th><th>PTS</th>
+              <th>W</th><th>D</th><th>L</th><th>F</th><th>A</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -180,8 +151,13 @@
               <td class="num">{{ r.rank }}</td>
 
               <td class="left">
-                <form method="post" action="/admin/update/{{ r.id }}?key={{ key }}" style="display:flex; gap:10px; align-items:center;">
-                  <input class="name" name="name" value="{{ r.name }}" required />
+                <form method="post" action="/admin/update/{{ r.id }}?key={{ key }}">
+                  <div class="editHead">
+                    <div class="rowline">
+                      <input class="name" name="name" value="{{ r.name }}" required />
+                      <input class="url" name="avatar_url" value="{{ r.avatar_url or '' }}" placeholder="Avatar URL" />
+                    </div>
+                  </div>
               </td>
 
               <td class="num">{{ r.p }}</td>

@@ -1,6 +1,5 @@
 import os
-from fastapi import Query, HTTPException
-from fastapi import FastAPI, Depends, HTTPException, Request, Form
+from fastapi import FastAPI, Depends, HTTPException, Request, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -14,7 +13,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="FC26 Leaderboard")
 
-# UI setup
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
@@ -25,22 +23,26 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
         p = t.w + t.d + t.l
         gd = t.f - t.a
         pts = (t.w * 3) + t.d
+
         rows.append(
             dict(
-                id=t.id, name=t.name,
+                id=t.id,
+                name=t.name,
+                avatar_url=t.avatar_url,
                 w=t.w, d=t.d, l=t.l,
                 f=t.f, a=t.a,
                 p=p, gd=gd, pts=pts
             )
         )
 
-    rows.sort(key=lambda r: (r["pts"], r["gd"], r["f"]), reverse=True)
+    # Tie-break: pts → gd → f → name
+    rows.sort(key=lambda r: (r["pts"], r["gd"], r["f"], r["name"].lower()), reverse=True)
     for i, r in enumerate(rows, start=1):
         r["rank"] = i
     return rows
 
 
-# ---------- UI PAGES ----------
+# ---------- UI ----------
 @app.get("/", response_class=HTMLResponse)
 def leaderboard_page(request: Request, db: Session = Depends(get_db)):
     teams = crud.list_teams(db)
@@ -57,14 +59,17 @@ def admin_page(request: Request, key: str = Query(None), db: Session = Depends(g
     table = compute_table(teams)
     return templates.TemplateResponse("admin.html", {"request": request, "table": table, "key": key})
 
+
 def require_admin(key: str | None):
     if key != os.getenv("ADMIN_KEY"):
         raise HTTPException(status_code=403, detail="Not authorized")
+
 
 @app.post("/admin/add")
 def admin_add_team(
     key: str = Query(None),
     name: str = Form(...),
+    avatar_url: str | None = Form(None),
     w: int = Form(0),
     d: int = Form(0),
     l: int = Form(0),
@@ -73,7 +78,14 @@ def admin_add_team(
     db: Session = Depends(get_db),
 ):
     require_admin(key)
-    crud.create_team(db, schemas.TeamCreate(name=name, w=w, d=d, l=l, f=f, a=a))
+    crud.create_team(
+        db,
+        schemas.TeamCreate(
+            name=name,
+            avatar_url=avatar_url,
+            w=w, d=d, l=l, f=f, a=a
+        )
+    )
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
 
@@ -82,6 +94,7 @@ def admin_update_team(
     team_id: int,
     key: str = Query(None),
     name: str = Form(...),
+    avatar_url: str | None = Form(None),
     w: int = Form(0),
     d: int = Form(0),
     l: int = Form(0),
@@ -90,7 +103,15 @@ def admin_update_team(
     db: Session = Depends(get_db),
 ):
     require_admin(key)
-    team = crud.update_team(db, team_id, schemas.TeamUpdate(name=name, w=w, d=d, l=l, f=f, a=a))
+    team = crud.update_team(
+        db,
+        team_id,
+        schemas.TeamUpdate(
+            name=name,
+            avatar_url=avatar_url,
+            w=w, d=d, l=l, f=f, a=a
+        )
+    )
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
@@ -111,14 +132,25 @@ def api_get_teams(db: Session = Depends(get_db)):
     teams = crud.list_teams(db)
     table = compute_table(teams)
 
-    # TeamOut requires rank included:
     return [
         schemas.TeamOut(
-            id=r["id"], name=r["name"], w=r["w"], d=r["d"], l=r["l"], f=r["f"], a=r["a"],
-            p=r["p"], gd=r["gd"], pts=r["pts"], rank=r["rank"]
+            id=r["id"],
+            rank=r["rank"],
+            name=r["name"],
+            avatar_url=r.get("avatar_url"),
+            p=r["p"],
+            gd=r["gd"],
+            pts=r["pts"],
+            w=r["w"],
+            d=r["d"],
+            l=r["l"],
+            f=r["f"],
+            a=r["a"],
         )
         for r in table
     ]
+
+
 @app.get("/api/leaderboard", response_model=list[schemas.TeamOut])
 def api_leaderboard(db: Session = Depends(get_db)):
     return api_get_teams(db)

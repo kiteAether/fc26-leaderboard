@@ -13,3 +13,5 @@ class Team(Base):
 
     f = Column(Integer, default=0)  # goals for
     a = Column(Integer, default=0)  # goals against 
+
+    avatar_url = Column(String, nullable=True)
