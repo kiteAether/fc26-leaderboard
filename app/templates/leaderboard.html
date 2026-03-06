@@ -27,10 +27,54 @@
                   var(--bg);
       color:var(--text);
     }
-    .container{max-width:560px; margin:0 auto; padding:18px 14px 50px;}
-    .header{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px;}
-    .title{font-size:24px; margin:0; letter-spacing:.2px;}
-    .sub{margin:6px 0 0 0; color:var(--muted); font-size:13px;}
+
+    .container{
+      max-width:560px;
+      margin:0 auto;
+      padding:18px 14px 50px;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .titleWrap{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+
+    .siteLogo{
+      width:56px;
+      height:56px;
+      display:block;
+      object-fit:contain;
+      flex-shrink:0;
+      color:#fff;
+    }
+
+    .titleBlock{
+      min-width:0;
+    }
+
+    .title{
+      font-size:24px;
+      margin:0;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+
+    .sub{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
     .pill{
       border:1px solid var(--line);
       background:rgba(255,255,255,.06);
@@ -53,6 +97,7 @@
       padding:14px;
       margin-bottom:14px;
     }
+
     .podium{
       display:flex;
       align-items:flex-end;
@@ -60,6 +105,7 @@
       gap:12px;
       padding:6px 4px 2px;
     }
+
     .player{
       flex:1;
       max-width:170px;
@@ -69,19 +115,20 @@
       background:rgba(255,255,255,.04);
       border:1px solid rgba(255,255,255,.06);
     }
+
     .player.first{
       transform: translateY(-6px);
       background: rgba(251,191,36,.08);
       border-color: rgba(251,191,36,.25);
     }
 
-    /* Avatar circle */
     .avatarWrap{
       position:relative;
       width:64px;
       height:64px;
       margin:0 auto 8px;
     }
+
     .avatarCircle{
       width:64px;
       height:64px;
@@ -94,12 +141,14 @@
       background: rgba(255,255,255,.06);
       box-shadow: 0 0 0 4px rgba(255,255,255,.03);
     }
+
     .avatarCircle img{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
     }
+
     .initials{
       font-weight:900;
       letter-spacing:.04em;
@@ -107,16 +156,31 @@
       text-transform:uppercase;
     }
 
-    .second .avatarCircle{ border-color: rgba(203,213,225,.65); box-shadow:0 0 0 4px rgba(203,213,225,.10); }
-    .third  .avatarCircle{ border-color: rgba(251,146,60,.65); box-shadow:0 0 0 4px rgba(251,146,60,.10); }
+    .second .avatarCircle{
+      border-color: rgba(203,213,225,.65);
+      box-shadow:0 0 0 4px rgba(203,213,225,.10);
+    }
 
-    .first .avatarWrap{ width:82px; height:82px; }
+    .third .avatarCircle{
+      border-color: rgba(251,146,60,.65);
+      box-shadow:0 0 0 4px rgba(251,146,60,.10);
+    }
+
+    .first .avatarWrap{
+      width:82px;
+      height:82px;
+    }
+
     .first .avatarCircle{
-      width:82px; height:82px;
+      width:82px;
+      height:82px;
       border-color: rgba(251,191,36,.75);
       box-shadow:0 0 0 5px rgba(251,191,36,.12);
     }
-    .first .initials{ font-size:20px; }
+
+    .first .initials{
+      font-size:20px;
+    }
 
     .crown{
       position:absolute;
@@ -132,8 +196,21 @@
       backdrop-filter: blur(6px);
     }
 
-    .pname{font-size:13px; font-weight:900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-    .ppoints{margin-top:4px; font-size:12px; color:var(--accent); font-weight:900; font-variant-numeric: tabular-nums;}
+    .pname{
+      font-size:13px;
+      font-weight:900;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .ppoints{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--accent);
+      font-weight:900;
+      font-variant-numeric: tabular-nums;
+    }
 
     @media (max-width: 380px){
       .podium{gap:8px}
@@ -144,6 +221,15 @@
       .first .avatarWrap{width:72px;height:72px}
       .first .avatarCircle{width:72px;height:72px}
       .first .initials{font-size:18px}
+
+      .siteLogo{
+        width:44px;
+        height:44px;
+      }
+
+      .title{
+        font-size:20px;
+      }
     }
 
     .listCard{
@@ -153,6 +239,7 @@
       box-shadow: var(--shadow);
       overflow:hidden;
     }
+
     .listHeader{
       padding:12px 14px;
       border-bottom:1px solid var(--line);
@@ -162,6 +249,7 @@
       letter-spacing:.08em;
       text-transform:uppercase;
     }
+
     .row{
       display:grid;
       grid-template-columns: 44px 1fr auto;
@@ -170,36 +258,113 @@
       padding:12px 14px;
       border-bottom:1px solid rgba(255,255,255,.07);
     }
+
     .row:last-child{border-bottom:none;}
     .row:hover{background:rgba(255,255,255,.04);}
+
     .rank{
-      width:44px; height:34px; border-radius:999px;
-      display:flex; align-items:center; justify-content:center;
+      width:44px;
+      height:34px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.06);
       font-weight:900;
       font-variant-numeric: tabular-nums;
     }
+
     .row.r1 .rank{ border-color: rgba(251,191,36,.40); background:rgba(251,191,36,.10); }
     .row.r2 .rank{ border-color: rgba(203,213,225,.35); background:rgba(203,213,225,.08); }
     .row.r3 .rank{ border-color: rgba(251,146,60,.35); background:rgba(251,146,60,.08); }
 
-    .nameBlock{min-width:0; display:flex; flex-direction:column; gap:4px;}
-    .nameLine{display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0;}
-    .teamName{font-weight:900; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-    .pts{font-weight:900; color:var(--accent); font-variant-numeric: tabular-nums; white-space:nowrap;}
-    .stats{color:var(--muted); font-size:12px; font-variant-numeric: tabular-nums; display:flex; flex-wrap:wrap; gap:10px;}
-    .chip{border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.05); padding:4px 8px; border-radius:999px;}
+    .nameBlock{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .nameLine{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      min-width:0;
+    }
+
+    .teamName{
+      font-weight:900;
+      font-size:14px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .pts{
+      font-weight:900;
+      color:var(--accent);
+      font-variant-numeric: tabular-nums;
+      white-space:nowrap;
+    }
+
+    .stats{
+      color:var(--muted);
+      font-size:12px;
+      font-variant-numeric: tabular-nums;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .chip{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      padding:4px 8px;
+      border-radius:999px;
+    }
 
     @media (min-width: 900px){
-      .container{ max-width: 980px; padding: 26px 18px 70px; }
-      .title{ font-size:28px; }
-      .podiumCard{ padding:18px; }
-      .podium{ gap:18px; }
-      .row{ grid-template-columns: 56px 1fr auto; padding:14px 16px; }
-      .rank{ width:56px; height:38px; }
-      .teamName{ font-size:15px; }
-      .stats{ font-size:13px; }
+      .container{
+        max-width:980px;
+        padding:26px 18px 70px;
+      }
+
+      .title{
+        font-size:28px;
+      }
+
+      .siteLogo{
+        width:62px;
+        height:62px;
+      }
+
+      .podiumCard{
+        padding:18px;
+      }
+
+      .podium{
+        gap:18px;
+      }
+
+      .row{
+        grid-template-columns: 56px 1fr auto;
+        padding:14px 16px;
+      }
+
+      .rank{
+        width:56px;
+        height:38px;
+      }
+
+      .teamName{
+        font-size:15px;
+      }
+
+      .stats{
+        font-size:13px;
+      }
     }
   </style>
 </head>
@@ -207,8 +372,11 @@
 <body>
   <div class="container">
     <div class="header">
-      <div>
-        <h1 class="title">FC26 Leaderboard</h1>
+      <div class="titleWrap">
+        <img src="/static/fc26_logo_optimized.svg" alt="FC26 Logo" class="siteLogo">
+        <div class="titleBlock">
+          <h1 class="title">FC26 Leaderboard</h1>
+        </div>
       </div>
     </div>
 
@@ -297,7 +465,6 @@
   </div>
 
   <script>
-    // Auto-generate consistent color backgrounds for initials avatars
     function hashColor(str){
       let h = 0;
       for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
@@ -308,7 +475,6 @@
     document.querySelectorAll('.avatarCircle').forEach(el => {
       const img = el.querySelector('img');
       if (img) {
-        // If image fails to load, fallback to initials
         img.addEventListener('error', () => {
           const name = (el.dataset.name || '').trim();
           el.innerHTML = `<span class="initials">${(name.slice(0,2) || '?').toUpperCase()}</span>`;
