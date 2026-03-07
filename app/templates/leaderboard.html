@@ -9,7 +9,6 @@
     :root{
       --bg:#070b16;
 
-      /* PlayStation-like ambient blues / violets */
       --ps-blue:#1d4ed8;
       --ps-blue-soft:#60a5fa;
       --ps-indigo:#4f46e5;
@@ -43,179 +42,30 @@
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(1100px 700px at 12% 0%, rgba(58,130,246,.34), transparent 55%),
-        radial-gradient(850px 560px at 90% 78%, rgba(79,70,229,.24), transparent 48%),
-        radial-gradient(700px 420px at 52% 100%, rgba(56,189,248,.09), transparent 44%),
-        linear-gradient(180deg, #10205b 0%, #0c1d59 18%, #0a1847 42%, #071634 72%, #061225 100%);
       color:var(--text);
       min-height:100vh;
       overflow-x:hidden;
-    }
-
-    /* ===== PlayStation SVG background ===== */
-    .psBg{
-      position:fixed;
-      inset:0;
-      overflow:hidden;
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .psShape{
-      position:absolute;
-      width:180px;
-      height:180px;
-      opacity:.16;
-      filter:
-        drop-shadow(0 0 18px rgba(96,165,250,.16))
-        drop-shadow(0 0 36px rgba(29,78,216,.14));
-      animation:psFloat ease-in-out infinite;
-      transform-origin:center;
-    }
-
-    .psShape svg{
-      width:100%;
-      height:100%;
-      display:block;
-    }
-
-    .psStroke{
-      fill:none;
-      stroke:url(#psStrokeGradient);
-      stroke-width:7;
-      stroke-linejoin:round;
-      stroke-linecap:round;
-    }
-
-    .psGlow{
-      fill:none;
-      stroke:rgba(255,255,255,.10);
-      stroke-width:2.5;
-      filter:blur(1px);
-    }
-
-    /* ===== Better composition ===== */
-
-    /* giant cropped triangle top-left */
-    .psTriangleA{
-      top:8%;
-      left:-10%;
-      width:210px;
-      height:210px;
-      opacity:.18;
-      animation-duration:34s;
-    }
-
-    /* tiny supporting cross near top-left */
-    .psCrossA{
-      top:10%;
-      left:16%;
-      width:44px;
-      height:44px;
-      opacity:.18;
-      animation-duration:22s;
-    }
-
-    /* tiny supporting square upper-middle */
-    .psSquareA{
-      top:3%;
-      left:58%;
-      width:72px;
-      height:72px;
-      opacity:.12;
-      animation-duration:30s;
-    }
-
-    /* small circle left side */
-    .psCircleA{
-      top:23%;
-      left:4%;
-      width:56px;
-      height:56px;
-      opacity:.15;
-      animation-duration:26s;
-    }
-
-    /* large cropped cross right side */
-    .psCrossB{
-      top:28%;
-      right:-11%;
-      width:215px;
-      height:215px;
-      opacity:.16;
-      animation-duration:38s;
-    }
-
-    /* big circle lower-right/mid */
-    .psCircleB{
-      top:60%;
-      right:18%;
-      width:150px;
-      height:150px;
-      opacity:.17;
-      animation-duration:36s;
-    }
-
-    /* large square lower-right */
-    .psSquareB{
-      top:70%;
-      right:-8%;
-      width:170px;
-      height:170px;
-      opacity:.17;
-      animation-duration:42s;
-    }
-
-    /* small cross near bottom-left */
-    .psCrossC{
-      bottom:8%;
-      left:30%;
-      width:72px;
-      height:72px;
-      opacity:.11;
-      animation-duration:24s;
-    }
-
-    /* medium triangle bottom-mid */
-    .psTriangleB{
-      bottom:-2%;
-      left:48%;
-      width:112px;
-      height:112px;
-      opacity:.13;
-      animation-duration:32s;
-    }
-
-    /* blurry distant circle lower-right edge */
-    .psCircleC{
-      bottom:12%;
-      right:6%;
-      width:74px;
-      height:74px;
-      opacity:.10;
-      filter:
-        blur(2px)
-        drop-shadow(0 0 18px rgba(96,165,250,.10));
-      animation-duration:40s;
-    }
-
-    @keyframes psFloat{
-      0%{
-        transform:translate3d(0,0,0) rotate(0deg);
-      }
-      25%{
-        transform:translate3d(7px,-10px,0) rotate(3deg);
-      }
-      50%{
-        transform:translate3d(-8px,-20px,0) rotate(-4deg);
-      }
-      75%{
-        transform:translate3d(10px,-8px,0) rotate(2deg);
-      }
-      100%{
-        transform:translate3d(0,0,0) rotate(0deg);
-      }
+      background-color:#071225;
+      background-image:
+        linear-gradient(180deg, rgba(9,20,60,.52) 0%, rgba(8,19,55,.66) 26%, rgba(6,18,37,.82) 62%, rgba(5,14,28,.94) 100%),
+        radial-gradient(1100px 700px at 12% 0%, rgba(58,130,246,.24), transparent 55%),
+        radial-gradient(850px 560px at 90% 78%, rgba(79,70,229,.16), transparent 48%),
+        radial-gradient(700px 420px at 52% 100%, rgba(56,189,248,.06), transparent 44%),
+        url("/static/fc26_bg.jpg");
+      background-size:
+        cover,
+        auto,
+        auto,
+        auto,
+        cover;
+      background-position:
+        center,
+        center,
+        center,
+        center,
+        center top;
+      background-repeat:no-repeat;
+      background-attachment:scroll;
     }
 
     .container{
@@ -249,7 +99,7 @@
       object-fit:contain;
       display:block;
       opacity:.95;
-      filter: drop-shadow(0 0 14px rgba(255,255,255,.06));
+      filter: drop-shadow(0 0 14px rgba(255,255,255,.08));
     }
 
     .heroTitle{
@@ -265,6 +115,7 @@
       background-clip:text;
       -webkit-text-fill-color:transparent;
       color:transparent;
+      text-shadow:0 6px 24px rgba(0,0,0,.22);
     }
 
     .heroSub{
@@ -274,11 +125,12 @@
       font-size:15px;
       line-height:1.65;
       text-wrap:pretty;
+      text-shadow:0 4px 18px rgba(0,0,0,.18);
     }
 
     /* ===== Podium ===== */
     .podiumCard{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.035));
+      background: linear-gradient(180deg, rgba(15,23,42,.58), rgba(15,23,42,.42));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -407,7 +259,7 @@
 
     /* ===== Standings ===== */
     .listCard{
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      background: linear-gradient(180deg, rgba(10,18,35,.70), rgba(10,18,35,.52));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -648,69 +500,6 @@
       .chip{
         padding:4px 7px;
       }
-
-      .psTriangleA{
-        top:10%;
-        left:-12%;
-        width:180px;
-        height:180px;
-      }
-
-      .psCrossA{
-        top:11%;
-        left:18%;
-        width:36px;
-        height:36px;
-      }
-
-      .psSquareA{
-        top:4%;
-        left:63%;
-        width:56px;
-        height:56px;
-      }
-
-      .psCircleA{
-        top:24%;
-        left:2%;
-        width:46px;
-        height:46px;
-      }
-
-      .psCrossB{
-        top:31%;
-        right:-11%;
-        width:165px;
-        height:165px;
-      }
-
-      .psCircleB{
-        top:63%;
-        right:17%;
-        width:120px;
-        height:120px;
-      }
-
-      .psSquareB{
-        top:72%;
-        right:-8%;
-        width:135px;
-        height:135px;
-      }
-
-      .psCrossC{
-        bottom:8%;
-        left:28%;
-        width:56px;
-        height:56px;
-      }
-
-      .psTriangleB{
-        bottom:0%;
-        left:49%;
-        width:92px;
-        height:92px;
-      }
     }
 
     @media (max-width:480px){
@@ -779,47 +568,6 @@
         font-size:12px;
         padding:3px 7px;
       }
-
-      .psCrossA,
-      .psSquareA,
-      .psCircleA,
-      .psCrossC,
-      .psTriangleB,
-      .psCircleC{
-        display:none;
-      }
-
-      .psTriangleA{
-        top:10%;
-        left:-13%;
-        width:155px;
-        height:155px;
-        opacity:.15;
-      }
-
-      .psCrossB{
-        top:34%;
-        right:-13%;
-        width:135px;
-        height:135px;
-        opacity:.13;
-      }
-
-      .psCircleB{
-        top:67%;
-        right:17%;
-        width:96px;
-        height:96px;
-        opacity:.14;
-      }
-
-      .psSquareB{
-        top:74%;
-        right:-8%;
-        width:112px;
-        height:112px;
-        opacity:.14;
-      }
     }
 
     @media (max-width:380px){
@@ -878,85 +626,6 @@
 </head>
 
 <body>
-  <div class="psBg" aria-hidden="true">
-    <div class="psShape psTriangleA">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <defs>
-          <linearGradient id="psStrokeGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#9fd3ff"/>
-            <stop offset="45%" stop-color="#4ea6ff"/>
-            <stop offset="100%" stop-color="#1f5dd8"/>
-          </linearGradient>
-        </defs>
-        <polygon class="psGlow" points="50,10 90,88 10,88"></polygon>
-        <polygon class="psStroke" points="50,10 90,88 10,88"></polygon>
-      </svg>
-    </div>
-
-    <div class="psShape psCrossA">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <polygon class="psGlow" points="38,10 62,10 62,38 90,38 90,62 62,62 62,90 38,90 38,62 10,62 10,38 38,38"></polygon>
-        <polygon class="psStroke" points="38,10 62,10 62,38 90,38 90,62 62,62 62,90 38,90 38,62 10,62 10,38 38,38"></polygon>
-      </svg>
-    </div>
-
-    <div class="psShape psSquareA">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <rect class="psGlow" x="18" y="18" width="64" height="64"></rect>
-        <rect class="psStroke" x="18" y="18" width="64" height="64"></rect>
-      </svg>
-    </div>
-
-    <div class="psShape psCircleA">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <circle class="psGlow" cx="50" cy="50" r="31"></circle>
-        <circle class="psStroke" cx="50" cy="50" r="31"></circle>
-      </svg>
-    </div>
-
-    <div class="psShape psCrossB">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <polygon class="psGlow" points="38,10 62,10 62,38 90,38 90,62 62,62 62,90 38,90 38,62 10,62 10,38 38,38"></polygon>
-        <polygon class="psStroke" points="38,10 62,10 62,38 90,38 90,62 62,62 62,90 38,90 38,62 10,62 10,38 38,38"></polygon>
-      </svg>
-    </div>
-
-    <div class="psShape psCircleB">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <circle class="psGlow" cx="50" cy="50" r="32"></circle>
-        <circle class="psStroke" cx="50" cy="50" r="32"></circle>
-      </svg>
-    </div>
-
-    <div class="psShape psSquareB">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <rect class="psGlow" x="18" y="18" width="64" height="64"></rect>
-        <rect class="psStroke" x="18" y="18" width="64" height="64"></rect>
-      </svg>
-    </div>
-
-    <div class="psShape psCrossC">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <polygon class="psGlow" points="38,10 62,10 62,38 90,38 90,62 62,62 62,90 38,90 38,62 10,62 10,38 38,38"></polygon>
-        <polygon class="psStroke" points="38,10 62,10 62,38 90,38 90,62 62,62 62,90 38,90 38,62 10,62 10,38 38,38"></polygon>
-      </svg>
-    </div>
-
-    <div class="psShape psTriangleB">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <polygon class="psGlow" points="50,12 88,86 12,86"></polygon>
-        <polygon class="psStroke" points="50,12 88,86 12,86"></polygon>
-      </svg>
-    </div>
-
-    <div class="psShape psCircleC">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <circle class="psGlow" cx="50" cy="50" r="28"></circle>
-        <circle class="psStroke" cx="50" cy="50" r="28"></circle>
-      </svg>
-    </div>
-  </div>
-
   <div class="container">
     <div class="hero">
       <div class="eyebrow">
