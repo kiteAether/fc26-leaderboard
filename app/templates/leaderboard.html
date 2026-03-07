@@ -54,7 +54,110 @@
       min-height:100vh;
     }
 
+        /* ===== PlayStation floating symbols background ===== */
+    .bgSymbols{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .bgSymbol{
+      position:absolute;
+      color:rgba(140, 190, 255, 0.10);
+      text-shadow:
+        0 0 18px rgba(96,165,250,.18),
+        0 0 42px rgba(79,70,229,.10);
+      user-select:none;
+      animation:floatDrift linear infinite;
+    }
+
+    .bgSymbol.s1{
+      top:7%;
+      left:4%;
+      font-size:34px;
+      animation-duration:24s;
+      animation-delay:-3s;
+    }
+
+    .bgSymbol.s2{
+      top:13%;
+      right:8%;
+      font-size:78px;
+      animation-duration:34s;
+      animation-delay:-8s;
+    }
+
+    .bgSymbol.s3{
+      top:36%;
+      left:10%;
+      font-size:44px;
+      animation-duration:28s;
+      animation-delay:-12s;
+    }
+
+    .bgSymbol.s4{
+      top:58%;
+      right:22%;
+      font-size:88px;
+      animation-duration:32s;
+      animation-delay:-6s;
+    }
+
+    .bgSymbol.s5{
+      bottom:10%;
+      left:18%;
+      font-size:54px;
+      animation-duration:30s;
+      animation-delay:-15s;
+    }
+
+    .bgSymbol.s6{
+      bottom:14%;
+      right:10%;
+      font-size:66px;
+      animation-duration:26s;
+      animation-delay:-10s;
+    }
+
+    .bgSymbol.s7{
+      top:74%;
+      left:42%;
+      font-size:38px;
+      animation-duration:22s;
+      animation-delay:-4s;
+    }
+
+    .bgSymbol.s8{
+      top:22%;
+      left:46%;
+      font-size:26px;
+      animation-duration:20s;
+      animation-delay:-7s;
+    }
+
+    @keyframes floatDrift{
+      0%{
+        transform:translate3d(0,0,0) rotate(0deg);
+      }
+      25%{
+        transform:translate3d(10px,-18px,0) rotate(6deg);
+      }
+      50%{
+        transform:translate3d(-8px,-30px,0) rotate(-4deg);
+      }
+      75%{
+        transform:translate3d(14px,-12px,0) rotate(5deg);
+      }
+      100%{
+        transform:translate3d(0,0,0) rotate(0deg);
+      }
+    }
+
     .container{
+      position:relative;
+      z-index:1;
       max-width:980px;
       margin:0 auto;
       padding:26px 18px 70px;
@@ -612,6 +715,16 @@
 </head>
 
 <body>
+  <div class="bgSymbols" aria-hidden="true">
+  <span class="bgSymbol s1">△</span>
+  <span class="bgSymbol s2">✕</span>
+  <span class="bgSymbol s3">○</span>
+  <span class="bgSymbol s4">□</span>
+  <span class="bgSymbol s5">✕</span>
+  <span class="bgSymbol s6">△</span>
+  <span class="bgSymbol s7">○</span>
+  <span class="bgSymbol s8">□</span>
+  </div>
   <div class="container">
 
     <div class="hero">
