@@ -1,424 +1,359 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FC26 Admin</title>
-  <style>
-    :root{
-      --bg:#070b16;
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>FC26 Admin</title>
 
-      --ps-blue:#1d4ed8;
-      --ps-blue-soft:#60a5fa;
-      --ps-indigo:#4f46e5;
-      --ps-violet:#7c3aed;
-      --ps-cyan:#38bdf8;
+<style>
+:root{
+--text:#fff;
+--muted:#a7b0c3;
+--line:rgba(255,255,255,.1);
+--accent:#7fb3ff;
+--danger:#ef4444;
+--radius:16px;
+--shadow:0 18px 50px rgba(0,0,0,.45);
+}
 
-      --text:#ffffff;
-      --muted:#a7b0c3;
-      --line:rgba(255,255,255,.10);
+*{box-sizing:border-box}
 
-      --accent:#7fb3ff;
-      --accent-strong:#60a5fa;
+body{
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+color:var(--text);
+min-height:100vh;
 
-      --danger:#ef4444;
-      --danger-soft:rgba(239,68,68,.16);
+background:
+linear-gradient(180deg,rgba(9,20,60,.55),rgba(5,14,28,.95)),
+radial-gradient(1100px 700px at 12% 0%,rgba(58,130,246,.25),transparent 55%),
+radial-gradient(850px 560px at 90% 78%,rgba(79,70,229,.15),transparent 48%),
+url("/static/fc26_bg.jpg");
 
-      --gold:#fbbf24;
-      --silver:#cbd5e1;
-      --bronze:#fb923c;
+background-size:cover;
+background-position:center;
+}
 
-      --shadow:0 18px 50px rgba(0,0,0,.45);
-      --radius:16px;
-    }
+.wrap{
+max-width:1100px;
+margin:auto;
+padding:24px 16px 60px;
+}
 
-    *{box-sizing:border-box}
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+margin-bottom:16px;
+}
 
-    body{
-      margin:0;
-      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
-      min-height:100vh;
-      overflow-x:hidden;
-      background-color:#071225;
-      background-image:
-        linear-gradient(180deg, rgba(9,20,60,.52) 0%, rgba(8,19,55,.66) 26%, rgba(6,18,37,.82) 62%, rgba(5,14,28,.94) 100%),
-        radial-gradient(1100px 700px at 12% 0%, rgba(58,130,246,.24), transparent 55%),
-        radial-gradient(850px 560px at 90% 78%, rgba(79,70,229,.16), transparent 48%),
-        radial-gradient(700px 420px at 52% 100%, rgba(56,189,248,.06), transparent 44%),
-        url("/static/fc26_bg.jpg");
-      background-size:
-        cover,
-        auto,
-        auto,
-        auto,
-        cover;
-      background-position:
-        center,
-        center,
-        center,
-        center,
-        center top;
-      background-repeat:no-repeat;
-      background-attachment:scroll;
-    }
+.title{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
 
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:24px 16px 60px;
-      position:relative;
-      z-index:1;
-    }
+h1{
+margin:0;
+font-size:24px;
+font-weight:900;
+background:linear-gradient(90deg,#fff,#8fb8ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
 
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:16px;
-    }
+.sub{
+font-size:13px;
+color:var(--muted);
+}
 
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
+.topActions{
+display:flex;
+gap:10px;
+}
 
-    h1{
-      margin:0;
-      font-size:24px;
-      letter-spacing:.2px;
-      font-weight:900;
-      background: linear-gradient(90deg, #ffffff 0%, #dbeafe 40%, #8fb8ff 100%);
-      -webkit-background-clip:text;
-      background-clip:text;
-      -webkit-text-fill-color:transparent;
-      color:transparent;
-    }
+a{
+text-decoration:none;
+color:#fff;
+padding:10px 14px;
+border-radius:999px;
+border:1px solid var(--line);
+background:rgba(255,255,255,.08);
+}
 
-    .sub{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-      max-width:620px;
-    }
+.card{
+background:linear-gradient(180deg,rgba(10,18,35,.75),rgba(10,18,35,.55));
+border:1px solid var(--line);
+border-radius:var(--radius);
+box-shadow:var(--shadow);
+overflow:hidden;
+}
 
-    a{
-      color:var(--text);
-      text-decoration:none;
-      padding:10px 14px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.08);
-      backdrop-filter:blur(10px);
-      transition:.2s ease;
-      white-space:nowrap;
-    }
+.section{
+padding:14px;
+border-bottom:1px solid var(--line);
+background:rgba(17,24,39,.55);
+}
 
-    a:hover{
-      background:rgba(255,255,255,.12);
-      border-color:rgba(127,179,255,.35);
-    }
+.sectionHeader{
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:10px;
+}
 
-    .card{
-      background: linear-gradient(180deg, rgba(10,18,35,.74), rgba(10,18,35,.56));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      backdrop-filter:blur(10px);
-    }
+.section h2{
+margin:0;
+font-size:14px;
+text-transform:uppercase;
+color:var(--muted);
+letter-spacing:.08em;
+}
 
-    .section{
-      padding:14px;
-      border-bottom:1px solid var(--line);
-      background:rgba(17,24,39,.55);
-      backdrop-filter:blur(10px);
-    }
+.bulkActions{
+display:flex;
+gap:10px;
+}
 
-    .section h2{
-      margin:0;
-      font-size:14px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
+.rowform{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:12px;
+}
 
-    .rowform{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:12px;
-    }
+input{
+background:rgba(255,255,255,.06);
+border:1px solid var(--line);
+color:#fff;
+padding:10px 12px;
+border-radius:12px;
+outline:none;
+width:90px;
+}
 
-    input{
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--line);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      outline:none;
-      font-size:14px;
-      width:90px;
-      transition:.18s ease;
-    }
+input.name{width:260px}
+input.url{width:360px}
 
-    input::placeholder{
-      color:rgba(167,176,195,.72);
-    }
+input:focus{
+border-color:rgba(127,179,255,.55);
+box-shadow:0 0 0 3px rgba(127,179,255,.14);
+}
 
-    input.name{width:260px}
-    input.url{width:360px}
+.btn{
+padding:10px 12px;
+border-radius:12px;
+border:1px solid var(--line);
+background:rgba(255,255,255,.08);
+color:#fff;
+cursor:pointer;
+font-weight:700;
+}
 
-    input:focus{
-      border-color:rgba(127,179,255,.55);
-      box-shadow:0 0 0 3px rgba(127,179,255,.14);
-      background:rgba(255,255,255,.08);
-    }
+.btn.primary{
+background:rgba(127,179,255,.16);
+border-color:rgba(127,179,255,.34);
+}
 
-    .btn{
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      cursor:pointer;
-      font-weight:700;
-      transition:.18s ease;
-    }
+.btn.danger{
+background:rgba(239,68,68,.18);
+border-color:rgba(239,68,68,.35);
+}
 
-    .btn:hover{
-      background:rgba(255,255,255,.12);
-    }
+.tablewrap{
+overflow:auto;
+}
 
-    .btn.primary{
-      background:rgba(127,179,255,.16);
-      border-color:rgba(127,179,255,.34);
-      color:#eaf3ff;
-    }
+table{
+width:100%;
+border-collapse:separate;
+border-spacing:0;
+min-width:1000px;
+}
 
-    .btn.primary:hover{
-      background:rgba(127,179,255,.24);
-      border-color:rgba(127,179,255,.42);
-      box-shadow:0 0 0 3px rgba(127,179,255,.10);
-    }
+thead th{
+background:rgba(10,13,22,.92);
+padding:12px 10px;
+border-bottom:1px solid var(--line);
+font-size:12px;
+color:var(--muted);
+text-transform:uppercase;
+}
 
-    .btn.danger{
-      background:var(--danger-soft);
-      border-color:rgba(239,68,68,.30);
-      color:#ffdfe2;
-    }
+tbody td{
+padding:12px 10px;
+border-bottom:1px solid rgba(255,255,255,.08);
+text-align:center;
+}
 
-    .btn.danger:hover{
-      background:rgba(239,68,68,.22);
-    }
+tbody tr:hover{
+background:rgba(255,255,255,.035);
+}
 
-    .tablewrap{
-      overflow:auto;
-    }
+td.left{text-align:left}
 
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      min-width:980px;
-    }
+.rankBadge{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+min-width:42px;
+height:34px;
+border-radius:999px;
+border:1px solid rgba(255,255,255,.12);
+background:rgba(255,255,255,.05);
+font-weight:900;
+}
 
-    thead th{
-      position:sticky;
-      top:0;
-      background:rgba(10,13,22,.92);
-      border-bottom:1px solid var(--line);
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      padding:12px 10px;
-      white-space:nowrap;
-      z-index:1;
-    }
+.actions{
+display:flex;
+gap:8px;
+justify-content:center;
+flex-wrap:wrap;
+}
 
-    tbody td{
-      padding:12px 10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      white-space:nowrap;
-      text-align:center;
-      vertical-align:middle;
-    }
+.rowSaveForm{
+display:inline;
+}
 
-    tbody tr:hover{
-      background:rgba(255,255,255,.035);
-    }
-
-    tbody tr:last-child td{
-      border-bottom:none;
-    }
-
-    td.left{
-      text-align:left;
-    }
-
-    .num{
-      font-variant-numeric:tabular-nums;
-    }
-
-    .pts{
-      font-weight:900;
-      color:var(--accent);
-      text-shadow:0 0 10px rgba(127,179,255,.28);
-    }
-
-    .hint{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-    }
-
-    .editHead{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-width:320px;
-    }
-
-    .editHead .rowline{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .rankBadge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:42px;
-      height:34px;
-      padding:0 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      font-weight:900;
-    }
-
-    .r1 .rankBadge{
-      border-color:rgba(251,191,36,.40);
-      background:rgba(251,191,36,.10);
-    }
-
-    .r2 .rankBadge{
-      border-color:rgba(203,213,225,.35);
-      background:rgba(203,213,225,.08);
-    }
-
-    .r3 .rankBadge{
-      border-color:rgba(251,146,60,.35);
-      background:rgba(251,146,60,.08);
-    }
-
-    .actions{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    @media (max-width:720px){
-      .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-
-      input.name{width:100%}
-      input.url{width:100%}
-      input{width:84px}
-      .editHead{min-width:220px}
-    }
-  </style>
+.rowDeleteForm{
+display:inline;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="title">
-        <h1>Admin — Edit Leaderboard</h1>
-        <div class="sub">Update W/D/L/F/A. P, GD and PTS are calculated automatically.</div>
-      </div>
-      <a href="/">Back to Leaderboard</a>
-    </div>
 
-    <div class="card">
-      <div class="section">
-        <h2>Add Team</h2>
-        <form class="rowform" method="post" action="/admin/add?key={{ key }}">
-          <input class="name" name="name" placeholder="Team / Player name" required />
-          <input class="url" name="avatar_url" placeholder="Avatar URL (optional)" />
-          <button class="btn primary" type="submit">Add</button>
-        </form>
-        <div class="hint">Tip: Avatar URL should be a direct image link (jpg/png/webp). Tie-break uses PTS → GD → F → Name.</div>
-      </div>
+<div class="wrap">
 
-      <div class="tablewrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th style="text-align:left;">Name + Avatar</th>
-              <th>P</th>
-              <th>GD</th>
-              <th>PTS</th>
-              <th>W</th>
-              <th>D</th>
-              <th>L</th>
-              <th>F</th>
-              <th>A</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for r in table %}
-            <tr class="r{{ r.rank }}">
-              <td class="num"><span class="rankBadge">{{ r.rank }}</span></td>
+<div class="topbar">
+<div class="title">
+<h1>Admin — Edit Leaderboard</h1>
+<div class="sub">Update W/D/L/F/A. PTS auto calculated.</div>
+</div>
 
-              <td class="left">
-                <form method="post" action="/admin/update/{{ r.id }}?key={{ key }}">
-                  <div class="editHead">
-                    <div class="rowline">
-                      <input class="name" name="name" value="{{ r.name }}" required />
-                      <input class="url" name="avatar_url" value="{{ r.avatar_url or '' }}" placeholder="Avatar URL" />
-                    </div>
-                  </div>
-              </td>
+<div class="topActions">
+<a href="/">Back</a>
+</div>
+</div>
 
-              <td class="num">{{ r.p }}</td>
-              <td class="num">{{ r.gd }}</td>
-              <td class="num pts">{{ r.pts }}</td>
 
-              <td><input name="w" type="number" value="{{ r.w }}" min="0" /></td>
-              <td><input name="d" type="number" value="{{ r.d }}" min="0" /></td>
-              <td><input name="l" type="number" value="{{ r.l }}" min="0" /></td>
-              <td><input name="f" type="number" value="{{ r.f }}" min="0" /></td>
-              <td><input name="a" type="number" value="{{ r.a }}" min="0" /></td>
+<div class="card">
 
-              <td>
-                <div class="actions">
-                  <button class="btn primary" type="submit">Save</button>
-                </form>
+<div class="section">
+<h2>Add Team</h2>
 
-                <form method="post" action="/admin/delete/{{ r.id }}?key={{ key }}" style="display:inline;">
-                  <button class="btn danger" type="submit" onclick="return confirm('Delete this team?')">Delete</button>
-                </form>
-                </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<form class="rowform" method="post" action="/admin/add?key={{ key }}">
+<input class="name" name="name" placeholder="Team / Player name" required>
+<input class="url" name="avatar_url" placeholder="Avatar URL">
+<button class="btn primary">Add</button>
+</form>
+
+</div>
+
+
+<div class="section">
+
+<div class="sectionHeader">
+
+<h2>Edit Teams</h2>
+
+<div class="bulkActions">
+
+<form method="post" action="/admin/save-all?key={{ key }}">
+<button class="btn primary">Save All</button>
+</form>
+
+<form method="post" action="/admin/clear-all?key={{ key }}">
+<button class="btn danger" onclick="return confirm('Reset ALL stats to zero?')">
+Clear All
+</button>
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="tablewrap">
+
+<form method="post" action="/admin/save-all?key={{ key }}">
+
+<table>
+
+<thead>
+<tr>
+<th>Rank</th>
+<th style="text-align:left">Name + Avatar</th>
+<th>P</th>
+<th>GD</th>
+<th>PTS</th>
+<th>W</th>
+<th>D</th>
+<th>L</th>
+<th>F</th>
+<th>A</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for r in table %}
+
+<tr>
+
+<td>
+<span class="rankBadge">{{ r.rank }}</span>
+<input type="hidden" name="id" value="{{ r.id }}">
+</td>
+
+<td class="left">
+<input class="name" name="name_{{r.id}}" value="{{r.name}}">
+<input class="url" name="avatar_url_{{r.id}}" value="{{r.avatar_url or ''}}">
+</td>
+
+<td>{{ r.p }}</td>
+<td>{{ r.gd }}</td>
+<td>{{ r.pts }}</td>
+
+<td><input type="number" name="w_{{r.id}}" value="{{r.w}}"></td>
+<td><input type="number" name="d_{{r.id}}" value="{{r.d}}"></td>
+<td><input type="number" name="l_{{r.id}}" value="{{r.l}}"></td>
+<td><input type="number" name="f_{{r.id}}" value="{{r.f}}"></td>
+<td><input type="number" name="a_{{r.id}}" value="{{r.a}}"></td>
+
+<td class="actions">
+
+<form class="rowSaveForm" method="post" action="/admin/update/{{r.id}}?key={{key}}">
+<button class="btn">Save</button>
+</form>
+
+<form class="rowDeleteForm" method="post" action="/admin/delete/{{r.id}}?key={{key}}">
+<button class="btn danger" onclick="return confirm('Delete this team?')">
+Delete
+</button>
+</form>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
 </body>
 </html>
