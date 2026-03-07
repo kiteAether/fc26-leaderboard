@@ -6,10 +6,11 @@
 <title>FC26 Admin</title>
 
 <style>
+
 :root{
---text:#fff;
+--text:#ffffff;
 --muted:#a7b0c3;
---line:rgba(255,255,255,.1);
+--line:rgba(255,255,255,.10);
 --accent:#7fb3ff;
 --danger:#ef4444;
 --radius:16px;
@@ -57,7 +58,7 @@ h1{
 margin:0;
 font-size:24px;
 font-weight:900;
-background:linear-gradient(90deg,#fff,#8fb8ff);
+background:linear-gradient(90deg,#ffffff,#8fb8ff);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
@@ -212,13 +213,6 @@ justify-content:center;
 flex-wrap:wrap;
 }
 
-.rowSaveForm{
-display:inline;
-}
-
-.rowDeleteForm{
-display:inline;
-}
 </style>
 </head>
 
@@ -227,6 +221,7 @@ display:inline;
 <div class="wrap">
 
 <div class="topbar">
+
 <div class="title">
 <h1>Admin — Edit Leaderboard</h1>
 <div class="sub">Update W/D/L/F/A. PTS auto calculated.</div>
@@ -235,8 +230,8 @@ display:inline;
 <div class="topActions">
 <a href="/">Back</a>
 </div>
-</div>
 
+</div>
 
 <div class="card">
 
@@ -260,12 +255,13 @@ display:inline;
 
 <div class="bulkActions">
 
-<form method="post" action="/admin/save-all?key={{ key }}">
-<button class="btn primary">Save All</button>
-</form>
+<button form="saveAllForm" class="btn primary">
+Save All
+</button>
 
 <form method="post" action="/admin/clear-all?key={{ key }}">
-<button class="btn danger" onclick="return confirm('Reset ALL stats to zero?')">
+<button class="btn danger"
+onclick="return confirm('Reset ALL stats to zero?')">
 Clear All
 </button>
 </form>
@@ -276,10 +272,9 @@ Clear All
 
 </div>
 
-
 <div class="tablewrap">
 
-<form method="post" action="/admin/save-all?key={{ key }}">
+<form id="saveAllForm" method="post" action="/admin/save-all?key={{ key }}">
 
 <table>
 
@@ -311,28 +306,43 @@ Clear All
 </td>
 
 <td class="left">
-<input class="name" name="name_{{r.id}}" value="{{r.name}}">
-<input class="url" name="avatar_url_{{r.id}}" value="{{r.avatar_url or ''}}">
+
+<input class="name"
+name="name_{{ r.id }}"
+value="{{ r.name }}">
+
+<input class="url"
+name="avatar_url_{{ r.id }}"
+value="{{ r.avatar_url or '' }}">
+
 </td>
 
 <td>{{ r.p }}</td>
 <td>{{ r.gd }}</td>
 <td>{{ r.pts }}</td>
 
-<td><input type="number" name="w_{{r.id}}" value="{{r.w}}"></td>
-<td><input type="number" name="d_{{r.id}}" value="{{r.d}}"></td>
-<td><input type="number" name="l_{{r.id}}" value="{{r.l}}"></td>
-<td><input type="number" name="f_{{r.id}}" value="{{r.f}}"></td>
-<td><input type="number" name="a_{{r.id}}" value="{{r.a}}"></td>
+<td><input type="number" name="w_{{ r.id }}" value="{{ r.w }}"></td>
+<td><input type="number" name="d_{{ r.id }}" value="{{ r.d }}"></td>
+<td><input type="number" name="l_{{ r.id }}" value="{{ r.l }}"></td>
+<td><input type="number" name="f_{{ r.id }}" value="{{ r.f }}"></td>
+<td><input type="number" name="a_{{ r.id }}" value="{{ r.a }}"></td>
 
 <td class="actions">
 
-<form class="rowSaveForm" method="post" action="/admin/update/{{r.id}}?key={{key}}">
+<form method="post" action="/admin/update/{{ r.id }}?key={{ key }}">
+<input type="hidden" name="name" value="{{ r.name }}">
+<input type="hidden" name="avatar_url" value="{{ r.avatar_url }}">
+<input type="hidden" name="w" value="{{ r.w }}">
+<input type="hidden" name="d" value="{{ r.d }}">
+<input type="hidden" name="l" value="{{ r.l }}">
+<input type="hidden" name="f" value="{{ r.f }}">
+<input type="hidden" name="a" value="{{ r.a }}">
 <button class="btn">Save</button>
 </form>
 
-<form class="rowDeleteForm" method="post" action="/admin/delete/{{r.id}}?key={{key}}">
-<button class="btn danger" onclick="return confirm('Delete this team?')">
+<form method="post" action="/admin/delete/{{ r.id }}?key={{ key }}">
+<button class="btn danger"
+onclick="return confirm('Delete this team?')">
 Delete
 </button>
 </form>
