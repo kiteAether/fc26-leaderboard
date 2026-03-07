@@ -40,49 +40,46 @@
     /* ===== Hero composition ===== */
     .hero{
       text-align:center;
-      margin-bottom:26px;
-      padding-top:6px;
+      margin-bottom:28px;
+      padding-top:8px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
     }
 
     .eyebrow{
-      display:inline-flex;
+      display:flex;
       align-items:center;
       justify-content:center;
-      gap:14px;
-      margin-bottom:16px;
-    }
-
-    .eyebrowText{
-      font-size:13px;
-      font-weight:800;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:var(--accent);
+      margin-bottom:14px;
     }
 
     .eyebrowLogo{
-      width:200px;
+      width:140px;
       height:auto;
       object-fit:contain;
       display:block;
-      opacity:.96;
+      opacity:.95;
     }
 
     .heroTitle{
       margin:0;
       font-size:42px;
-      line-height:1.08;
+      line-height:1.05;
       font-weight:900;
       letter-spacing:-0.02em;
-      max-width:820px;
-      margin-left:auto;
-      margin-right:auto;
+      max-width:760px;
       text-wrap:balance;
+      background: linear-gradient(90deg, #ffffff, #dfe8ff);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      color:transparent;
     }
 
     .heroSub{
-      margin:14px auto 0;
-      max-width:640px;
+      margin-top:14px;
+      max-width:600px;
       color:var(--muted);
       font-size:15px;
       line-height:1.65;
@@ -320,26 +317,27 @@
       }
 
       .hero{
-        margin-bottom:18px;
+        margin-bottom:22px;
       }
 
       .eyebrow{
-        margin-bottom:12px;
+        margin-bottom:10px;
       }
 
       .eyebrowLogo{
-        width:92px;
+        width:110px;
       }
 
       .heroTitle{
         font-size:28px;
-        max-width:100%;
+        line-height:1.15;
+        padding:0 8px;
       }
 
       .heroSub{
         font-size:14px;
         max-width:100%;
-        padding:0 8px;
+        padding:0 12px;
       }
 
       .podiumCard{
@@ -486,16 +484,16 @@
     }
 
     @media (max-width: 380px){
+      .eyebrowLogo{
+        width:90px;
+      }
+
       .heroTitle{
-        font-size:22px;
+        font-size:24px;
       }
 
       .heroSub{
-        font-size:12px;
-      }
-
-      .eyebrowLogo{
-        width:78px;
+        font-size:13px;
       }
 
       .podium{
@@ -640,7 +638,7 @@
   <script>
     function hashColor(str){
       let h = 0;
-      for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
+      for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
       const hue = h % 360;
       return `hsl(${hue} 70% 35%)`;
     }
