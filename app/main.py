@@ -212,7 +212,17 @@ def admin_delete_team(
         raise HTTPException(status_code=404, detail="Team not found")
 
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
+@app.post("/admin/delete-all")
+def admin_delete_all(
+    key: str = Query(None),
+    db: Session = Depends(get_db),
+):
+    require_admin(key)
 
+    db.query(models.Team).delete()
+    db.commit()
+
+    return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
 # ---------- API ----------
 @app.get("/api/teams", response_model=list[schemas.TeamOut])

@@ -254,18 +254,27 @@ flex-wrap:wrap;
 <h2>Edit Teams</h2>
 
 <div class="bulkActions">
+  <button form="saveAllForm" class="btn primary">
+    Save All
+  </button>
 
-<button form="saveAllForm" class="btn primary">
-Save All
-</button>
+  <form method="post" action="/admin/clear-all?key={{ key }}">
+    <button
+      class="btn"
+      onclick="return confirm('Reset all team stats to zero?')"
+    >
+      Reset Stats
+    </button>
+  </form>
 
-<form method="post" action="/admin/clear-all?key={{ key }}">
-<button class="btn danger"
-onclick="return confirm('Reset ALL stats to zero?')">
-Clear All
-</button>
-</form>
-
+  <form method="post" action="/admin/delete-all?key={{ key }}">
+    <button
+      class="btn danger"
+      onclick="return confirm('Delete ALL teams permanently? This will erase the entire leaderboard.')"
+    >
+      Delete All
+    </button>
+  </form>
 </div>
 
 </div>
