@@ -29,9 +29,9 @@
       --radius:16px;
       --shadow:0 18px 50px rgba(0,0,0,.45);
 
-      --win:#34d399;
-      --draw:#aeb8c9;
-      --loss:#fb7185;
+      --win:#2EE887;
+      --draw:#CFCFCF;
+      --loss:#FF2D73;
 
       --gd:#8b5cf6;
       --gf:#38bdf8;
@@ -500,30 +500,33 @@
     }
 
     .chip{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      padding:4px 8px;
+      width:44px;
+      height:44px;
+      padding:0;
       border-radius:999px;
-      white-space:nowrap;
-      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:20px;
+      line-height:1;
+      border:none;
+      box-shadow:none;
     }
 
     .chip.win{
-      color:var(--win);
-      border-color:rgba(52,211,153,.28);
-      background:rgba(52,211,153,.10);
+      background:#2EE887;
+      color:#08110c;
     }
 
     .chip.draw{
-      color:var(--draw);
-      border-color:rgba(174,184,201,.22);
-      background:rgba(174,184,201,.08);
+      background:#CFCFCF;
+      color:#1a1a1a;
     }
 
     .chip.loss{
-      color:var(--loss);
-      border-color:rgba(251,113,133,.24);
-      background:rgba(251,113,133,.10);
+      background:#FF2D73;
+      color:#16070d;
     }
 
     .chip.gd{
