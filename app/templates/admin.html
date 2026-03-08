@@ -115,6 +115,7 @@ letter-spacing:.08em;
 .bulkActions{
 display:flex;
 gap:10px;
+flex-wrap:wrap;
 }
 
 .rowform{
@@ -186,6 +187,7 @@ tbody td{
 padding:12px 10px;
 border-bottom:1px solid rgba(255,255,255,.08);
 text-align:center;
+vertical-align:middle;
 }
 
 tbody tr:hover{
@@ -211,6 +213,41 @@ display:flex;
 gap:8px;
 justify-content:center;
 flex-wrap:wrap;
+}
+
+tbody tr{
+cursor:grab;
+}
+
+tbody tr:active{
+cursor:grabbing;
+}
+
+.sortable-ghost{
+opacity:.45;
+background:rgba(127,179,255,.08);
+}
+
+.sortable-chosen{
+background:rgba(255,255,255,.04);
+}
+
+@media (max-width:720px){
+  .topbar{
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .topActions{
+    width:100%;
+  }
+
+  .bulkActions{
+    width:100%;
+  }
+
+  input.name{width:100%}
+  input.url{width:100%}
 }
 
 </style>
@@ -246,7 +283,6 @@ flex-wrap:wrap;
 
 </div>
 
-
 <div class="section">
 
 <div class="sectionHeader">
@@ -254,7 +290,7 @@ flex-wrap:wrap;
 <h2>Edit Players</h2>
 
 <div class="bulkActions">
-  <button form="saveAllForm" class="btn primary">
+  <button form="saveAllForm" class="btn primary" type="submit">
     Save All
   </button>
 
@@ -262,6 +298,7 @@ flex-wrap:wrap;
     <button
       class="btn"
       onclick="return confirm('Reset all team stats to zero?')"
+      type="submit"
     >
       Reset Stats
     </button>
@@ -271,6 +308,7 @@ flex-wrap:wrap;
     <button
       class="btn danger"
       onclick="return confirm('Delete ALL teams permanently? This will erase the entire leaderboard.')"
+      type="submit"
     >
       Delete All
     </button>
@@ -307,7 +345,7 @@ flex-wrap:wrap;
 
 {% for r in table %}
 
-<tr>
+<tr data-id="{{ r.id }}">
 
 <td>
 <span class="rankBadge">{{ r.rank }}</span>
@@ -340,18 +378,19 @@ value="{{ r.avatar_url or '' }}">
 
 <form method="post" action="/admin/update/{{ r.id }}?key={{ key }}">
 <input type="hidden" name="name" value="{{ r.name }}">
-<input type="hidden" name="avatar_url" value="{{ r.avatar_url }}">
+<input type="hidden" name="avatar_url" value="{{ r.avatar_url or '' }}">
 <input type="hidden" name="w" value="{{ r.w }}">
 <input type="hidden" name="d" value="{{ r.d }}">
 <input type="hidden" name="l" value="{{ r.l }}">
 <input type="hidden" name="f" value="{{ r.f }}">
 <input type="hidden" name="a" value="{{ r.a }}">
-<button class="btn">Save</button>
+<button class="btn" type="submit">Save</button>
 </form>
 
 <form method="post" action="/admin/delete/{{ r.id }}?key={{ key }}">
 <button class="btn danger"
-onclick="return confirm('Delete this team?')">
+onclick="return confirm('Delete this team?')"
+type="submit">
 Delete
 </button>
 </form>
@@ -373,6 +412,37 @@ Delete
 </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script>
+const tbody = document.querySelector("tbody");
+
+if (tbody) {
+  new Sortable(tbody, {
+    animation: 150,
+    onEnd: async function () {
+      const ids = [];
+
+      document.querySelectorAll("tbody tr").forEach((row) => {
+        ids.push(parseInt(row.dataset.id, 10));
+      });
+
+      try {
+        await fetch("/admin/reorder?key={{ key }}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ order: ids })
+        });
+      } catch (err) {
+        console.error("Reorder failed:", err);
+      }
+    }
+  });
+}
+</script>
 
 </body>
 </html>

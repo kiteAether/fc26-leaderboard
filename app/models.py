@@ -14,3 +14,5 @@ class Team(Base):
     a = Column(Integer, default=0)  # goals against 
 
     avatar_url = Column(String, nullable=True)
+
+    manual_order = Column(Integer, default=0)
