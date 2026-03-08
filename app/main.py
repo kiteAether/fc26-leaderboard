@@ -67,12 +67,19 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
     current_rank = 0
 
     for i, r in enumerate(rows, start=1):
-        if prev_positive_pts is None or r["pts"] != prev_positive_pts or r["p"] != prev_p:
+        if r["pts"] == 0:
+            current_rank = i
+        elif (
+            prev_positive_pts is None
+            or r["pts"] != prev_positive_pts
+            or r["p"] != prev_p
+        ):
             current_rank = i
         r["rank"] = current_rank
-        prev_positive_pts = r["pts"]
-        prev_p = r["p"]
-
+        if r["pts"] > 0:
+            prev_positive_pts = r["pts"]
+            prev_p = r["p"]
+            
     return rows
 
 
