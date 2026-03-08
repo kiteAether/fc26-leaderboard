@@ -47,7 +47,7 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
             )
         )
 
-    # Ranking logic for current visible leaderboard stats:
+    # Sort order:
     # pts DESC → w DESC → d DESC → l ASC → p ASC → name ASC
     rows.sort(
         key=lambda r: (
@@ -60,15 +60,22 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
         )
     )
 
-    # Same points => same rank
-    prev_pts = None
+    # Custom rank rule:
+    # - teams with same positive points share rank
+    # - zero-point teams rank normally one by one
+    prev_positive_pts = None
     current_rank = 0
 
     for i, r in enumerate(rows, start=1):
-        if prev_pts is None or r["pts"] != prev_pts:
+        if r["pts"] == 0:
             current_rank = i
+        elif prev_positive_pts is None or r["pts"] != prev_positive_pts:
+            current_rank = i
+
         r["rank"] = current_rank
-        prev_pts = r["pts"]
+
+        if r["pts"] > 0:
+            prev_positive_pts = r["pts"]
 
     return rows
 
