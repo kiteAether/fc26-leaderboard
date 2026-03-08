@@ -21,34 +21,54 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 def compute_table(teams: list[models.Team]) -> list[dict]:
     rows = []
     for t in teams:
-        p = t.w + t.d + t.l
-        gd = t.f - t.a
-        pts = (t.w * 3) + t.d
+        w = t.w or 0
+        d = t.d or 0
+        l = t.l or 0
+        f = t.f or 0
+        a = t.a or 0
+
+        p = w + d + l
+        gd = f - a
+        pts = (w * 3) + d
 
         rows.append(
             dict(
                 id=t.id,
                 name=t.name,
                 avatar_url=t.avatar_url,
-                w=t.w,
-                d=t.d,
-                l=t.l,
-                f=t.f,
-                a=t.a,
+                w=w,
+                d=d,
+                l=l,
+                f=f,
+                a=a,
                 p=p,
                 gd=gd,
                 pts=pts,
             )
         )
 
-    # Tie-break: pts → gd → f → name
+    # Ranking logic for current visible leaderboard stats:
+    # pts DESC → w DESC → d DESC → l ASC → p ASC → name ASC
     rows.sort(
-        key=lambda r: (r["pts"], r["gd"], r["f"], r["name"].lower()),
-        reverse=True
+        key=lambda r: (
+            -r["pts"],
+            -r["w"],
+            -r["d"],
+            r["l"],
+            r["p"],
+            r["name"].lower(),
+        )
     )
 
+    # Same points => same rank
+    prev_pts = None
+    current_rank = 0
+
     for i, r in enumerate(rows, start=1):
-        r["rank"] = i
+        if prev_pts is None or r["pts"] != prev_pts:
+            current_rank = i
+        r["rank"] = current_rank
+        prev_pts = r["pts"]
 
     return rows
 
@@ -212,6 +232,8 @@ def admin_delete_team(
         raise HTTPException(status_code=404, detail="Team not found")
 
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
+
+
 @app.post("/admin/delete-all")
 def admin_delete_all(
     key: str = Query(None),
@@ -223,6 +245,7 @@ def admin_delete_all(
     db.commit()
 
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
+
 
 # ---------- API ----------
 @app.get("/api/teams", response_model=list[schemas.TeamOut])
