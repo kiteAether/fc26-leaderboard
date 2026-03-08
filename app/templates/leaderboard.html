@@ -35,6 +35,7 @@
       --gd:#8b5cf6;
       --gf:#38bdf8;
       --ga:#f59e0b;
+      --played:#22d3ee;
     }
 
     *{box-sizing:border-box}
@@ -358,6 +359,12 @@
       border-radius:999px;
       white-space:nowrap;
       color:var(--muted);
+    }
+
+    .chip.played{
+      color:var(--played);
+      border-color:rgba(34,211,238,.24);
+      background:rgba(34,211,238,.10);
     }
 
     .chip.win{
@@ -708,6 +715,7 @@
           </div>
 
           <div class="stats">
+            <span class="chip played">P {{ r.w + r.d + r.l }}</span>
             <span class="chip win">W {{ r.w }}</span>
             <span class="chip draw">D {{ r.d }}</span>
             <span class="chip loss">L {{ r.l }}</span>
