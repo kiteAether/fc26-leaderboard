@@ -38,19 +38,13 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
                 p=p,
                 gd=gd,
                 pts=pts,
-                manual_order=t.manual_order
             )
         )
 
     # Tie-break: pts → gd → f → name
     rows.sort(
-        key=lambda r: (
-            r.get("manual_order", 9999),
-            -r["pts"],
-            -r["gd"],
-            -r["f"],
-            r["name"].lower(),
-        )
+        key=lambda r: (r["pts"], r["gd"], r["f"], r["name"].lower()),
+        reverse=True
     )
 
     for i, r in enumerate(rows, start=1):
@@ -229,24 +223,6 @@ def admin_delete_all(
     db.commit()
 
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
-@app.post("/admin/reorder")
-async def admin_reorder(
-    request: Request,
-    key: str = Query(None),
-    db: Session = Depends(get_db),
-):
-    require_admin(key)
-
-    data = await request.json()
-
-    for index, team_id in enumerate(data["order"]):
-        team = db.query(models.Team).get(team_id)
-        if team:
-            team.manual_order = index
-
-    db.commit()
-
-    return {"status": "ok"}
 
 # ---------- API ----------
 @app.get("/api/teams", response_model=list[schemas.TeamOut])

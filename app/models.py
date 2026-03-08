@@ -15,4 +15,4 @@ class Team(Base):
 
     avatar_url = Column(String, nullable=True)
 
-    manual_order = Column(Integer, default=0)
+    
