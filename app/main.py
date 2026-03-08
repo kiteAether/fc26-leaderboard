@@ -47,35 +47,31 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
             )
         )
 
-    # Sort order:
-    # pts DESC → w DESC → d DESC → l ASC → p ASC → name ASC
-    rows.sort(
-        key=lambda r: (
-            -r["pts"],
-            -r["w"],
-            -r["d"],
-            r["l"],
-            r["p"],
-            r["name"].lower(),
+        # Sort order:
+        # pts DESC → w DESC → d DESC → l ASC → p ASC → name ASC
+        rows.sort(
+            key=lambda r: (
+                -r["pts"],
+                r["p"],
+                -r["w"],
+                r["l"],
+                r["name"].lower(),
+            )
         )
-    )
 
     # Custom rank rule:
     # - teams with same positive points share rank
     # - zero-point teams rank normally one by one
     prev_positive_pts = None
+    prev_p = None
     current_rank = 0
 
     for i, r in enumerate(rows, start=1):
-        if r["pts"] == 0:
+        if prev_positive_pts is None or r["pts"] != prev_positive_pts or r["p"] != prev_p:
             current_rank = i
-        elif prev_positive_pts is None or r["pts"] != prev_positive_pts:
-            current_rank = i
-
         r["rank"] = current_rank
-
-        if r["pts"] > 0:
-            prev_positive_pts = r["pts"]
+        prev_positive_pts = r["pts"]
+        prev_p = r["p"]
 
     return rows
 
