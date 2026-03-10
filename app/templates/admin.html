@@ -231,6 +231,7 @@ td.left{text-align:left}
   font-weight:900;
   letter-spacing:.04em;
   text-transform:uppercase;
+  flex-shrink:0;
 }
 
 .avatarPreview img{
@@ -267,6 +268,10 @@ td.left{text-align:left}
 }
 
 .hiddenForm{
+  display:none;
+}
+
+.rowSubmitForm{
   display:none;
 }
 
@@ -342,7 +347,7 @@ td.left{text-align:left}
       </div>
 
       <div class="note">
-        Use <strong>Save All</strong> for names, avatar URLs, and stats.  
+        Use <strong>Save All</strong> for names, avatar URLs, and stats.
         Use a player’s <strong>Save</strong> button when uploading an image file for that row.
       </div>
     </div>
@@ -417,21 +422,11 @@ td.left{text-align:left}
             <td>{{ r.gd }}</td>
             <td>{{ r.pts }}</td>
 
-            <td>
-              <input type="number" min="0" data-field="w" value="{{ r.w }}">
-            </td>
-            <td>
-              <input type="number" min="0" data-field="d" value="{{ r.d }}">
-            </td>
-            <td>
-              <input type="number" min="0" data-field="l" value="{{ r.l }}">
-            </td>
-            <td>
-              <input type="number" min="0" data-field="f" value="{{ r.f }}">
-            </td>
-            <td>
-              <input type="number" min="0" data-field="a" value="{{ r.a }}">
-            </td>
+            <td><input type="number" min="0" data-field="w" value="{{ r.w }}"></td>
+            <td><input type="number" min="0" data-field="d" value="{{ r.d }}"></td>
+            <td><input type="number" min="0" data-field="l" value="{{ r.l }}"></td>
+            <td><input type="number" min="0" data-field="f" value="{{ r.f }}"></td>
+            <td><input type="number" min="0" data-field="a" value="{{ r.a }}"></td>
 
             <td class="actions">
               <button type="button" class="btn" onclick="submitRow({{ r.id }})">
@@ -452,7 +447,7 @@ td.left{text-align:left}
 
           <form
             id="rowForm-{{ r.id }}"
-            class="hiddenForm"
+            class="rowSubmitForm"
             method="post"
             action="/admin/update/{{ r.id }}?key={{ key }}"
             enctype="multipart/form-data"
