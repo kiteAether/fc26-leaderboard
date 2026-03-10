@@ -1,6 +1,9 @@
 import os
+import uuid
+import shutil
+from pathlib import Path
 
-from fastapi import FastAPI, Depends, HTTPException, Request, Form, Query
+from fastapi import FastAPI, Depends, HTTPException, Request, Form, Query, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -16,6 +19,36 @@ app = FastAPI(title="FC26 Leaderboard")
 
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+UPLOAD_DIR = Path("app/static/uploads/players")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+ALLOWED_IMAGE_TYPES = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/webp": ".webp",
+    "image/gif": ".gif",
+}
+
+
+def save_uploaded_avatar(file: UploadFile | None) -> str | None:
+    if not file or not file.filename:
+        return None
+
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail="Only jpg, png, webp, and gif images are allowed",
+        )
+
+    ext = ALLOWED_IMAGE_TYPES[file.content_type]
+    filename = f"{uuid.uuid4().hex}{ext}"
+    file_path = UPLOAD_DIR / filename
+
+    with file_path.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return f"/static/uploads/players/{filename}"
 
 
 def compute_table(teams: list[models.Team]) -> list[dict]:
@@ -47,20 +80,20 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
             )
         )
 
-        # Sort order:
-        # pts DESC → w DESC → d DESC → l ASC → p ASC → name ASC
-        rows.sort(
-            key=lambda r: (
-                -r["pts"],
-                r["p"],
-                -r["w"],
-                r["l"],
-                r["name"].lower(),
-            )
+    # Sort order:
+    # pts DESC → fewer played first → more wins → fewer losses → name
+    rows.sort(
+        key=lambda r: (
+            -r["pts"],
+            r["p"],
+            -r["w"],
+            r["l"],
+            r["name"].lower(),
         )
+    )
 
-    # Custom rank rule:
-    # - teams with same positive points share rank
+    # Rank rule:
+    # - positive-point teams can share rank when pts and played are the same
     # - zero-point teams rank normally one by one
     prev_positive_pts = None
     prev_p = None
@@ -75,11 +108,13 @@ def compute_table(teams: list[models.Team]) -> list[dict]:
             or r["p"] != prev_p
         ):
             current_rank = i
+
         r["rank"] = current_rank
+
         if r["pts"] > 0:
             prev_positive_pts = r["pts"]
             prev_p = r["p"]
-            
+
     return rows
 
 
@@ -120,6 +155,7 @@ def admin_add_team(
     key: str = Query(None),
     name: str = Form(...),
     avatar_url: str | None = Form(None),
+    avatar_file: UploadFile | None = File(None),
     w: int = Form(0),
     d: int = Form(0),
     l: int = Form(0),
@@ -129,11 +165,14 @@ def admin_add_team(
 ):
     require_admin(key)
 
+    uploaded_avatar_url = save_uploaded_avatar(avatar_file)
+    final_avatar_url = uploaded_avatar_url or (avatar_url.strip() if avatar_url else None)
+
     crud.create_team(
         db,
         schemas.TeamCreate(
-            name=name,
-            avatar_url=avatar_url,
+            name=name.strip(),
+            avatar_url=final_avatar_url,
             w=w,
             d=d,
             l=l,
@@ -150,6 +189,7 @@ def admin_update_team(
     key: str = Query(None),
     name: str = Form(...),
     avatar_url: str | None = Form(None),
+    avatar_file: UploadFile | None = File(None),
     w: int = Form(0),
     d: int = Form(0),
     l: int = Form(0),
@@ -159,12 +199,20 @@ def admin_update_team(
 ):
     require_admin(key)
 
+    existing_team = db.query(models.Team).filter(models.Team.id == team_id).first()
+    if not existing_team:
+        raise HTTPException(status_code=404, detail="Team not found")
+
+    uploaded_avatar_url = save_uploaded_avatar(avatar_file)
+    cleaned_avatar_url = avatar_url.strip() if avatar_url else None
+    final_avatar_url = uploaded_avatar_url or cleaned_avatar_url
+
     team = crud.update_team(
         db,
         team_id,
         schemas.TeamUpdate(
-            name=name,
-            avatar_url=avatar_url,
+            name=name.strip(),
+            avatar_url=final_avatar_url,
             w=w,
             d=d,
             l=l,
