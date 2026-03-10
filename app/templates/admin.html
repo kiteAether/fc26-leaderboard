@@ -271,10 +271,6 @@ td.left{text-align:left}
   display:none;
 }
 
-.rowSubmitForm{
-  display:none;
-}
-
 @media (max-width: 900px){
   .topbar{
     flex-direction:column;
@@ -444,28 +440,30 @@ td.left{text-align:left}
               </form>
             </td>
           </tr>
-
-          <form
-            id="rowForm-{{ r.id }}"
-            class="rowSubmitForm"
-            method="post"
-            action="/admin/update/{{ r.id }}?key={{ key }}"
-            enctype="multipart/form-data"
-          >
-            <input type="hidden" name="name">
-            <input type="hidden" name="avatar_url">
-            <input type="hidden" name="w">
-            <input type="hidden" name="d">
-            <input type="hidden" name="l">
-            <input type="hidden" name="f">
-            <input type="hidden" name="a">
-          </form>
           {% endfor %}
         </tbody>
       </table>
     </div>
 
     <form id="saveAllForm" class="hiddenForm" method="post" action="/admin/save-all?key={{ key }}"></form>
+
+    {% for r in table %}
+    <form
+      id="rowForm-{{ r.id }}"
+      class="hiddenForm"
+      method="post"
+      action="/admin/update/{{ r.id }}?key={{ key }}"
+      enctype="multipart/form-data"
+    >
+      <input type="hidden" name="name">
+      <input type="hidden" name="avatar_url">
+      <input type="hidden" name="w">
+      <input type="hidden" name="d">
+      <input type="hidden" name="l">
+      <input type="hidden" name="f">
+      <input type="hidden" name="a">
+    </form>
+    {% endfor %}
 
   </div>
 </div>
@@ -490,6 +488,11 @@ function getRowField(row, fieldName) {
 function submitRow(teamId) {
   const row = getRow(teamId);
   const form = document.getElementById(`rowForm-${teamId}`);
+
+  if (!row || !form) {
+    console.error("Row form not found for team:", teamId);
+    return;
+  }
 
   form.querySelector('input[name="name"]').value = getRowField(row, "name").value.trim();
   form.querySelector('input[name="avatar_url"]').value = getRowField(row, "avatar_url").value.trim();
