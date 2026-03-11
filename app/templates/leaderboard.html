@@ -666,11 +666,182 @@
       .rowAvatar .initials{
         font-size:10px;
       }
+    /* ===== Floating menu button ===== */
+      .fc-menu-toggle{
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        z-index: 1200;
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.14);
+        background: rgba(10,18,40,.72);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: #ffffff;
+        font-size: 22px;
+        cursor: pointer;
+        box-shadow: 0 12px 30px rgba(0,0,0,.35);
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+
+      .fc-menu-toggle:hover{
+        transform: translateY(-1px);
+        border-color: rgba(96,165,250,.55);
+        box-shadow: 0 16px 36px rgba(0,0,0,.42);
+      }
+
+      /* ===== Sidebar ===== */
+      .fc-side-nav{
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(320px, 86vw);
+        height: 100vh;
+        z-index: 1300;
+        transform: translateX(100%);
+        transition: transform .28s ease;
+        background:
+          linear-gradient(180deg, rgba(8,16,40,.94), rgba(7,11,22,.96)),
+          radial-gradient(circle at top right, rgba(59,130,246,.18), transparent 35%);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-left: 1px solid rgba(255,255,255,.08);
+        box-shadow: -18px 0 40px rgba(0,0,0,.38);
+        padding: 18px 16px 24px;
+      }
+
+      .fc-side-nav.open{
+        transform: translateX(0);
+      }
+
+      .fc-side-nav__header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+      }
+
+      .fc-side-nav__title{
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 1.05rem;
+        letter-spacing: .02em;
+      }
+
+      .fc-side-nav__close{
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: rgba(255,255,255,.05);
+        color: #fff;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .fc-side-nav__links{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fc-side-nav__link{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 14px;
+        border-radius: 14px;
+        text-decoration: none;
+        color: #eaf1ff;
+        font-weight: 700;
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.08);
+        transition: background .18s ease, border-color .18s ease, transform .18s ease;
+      }
+
+      .fc-side-nav__link:hover{
+        transform: translateX(-2px);
+        background: rgba(59,130,246,.12);
+        border-color: rgba(96,165,250,.42);
+      }
+
+      .fc-side-nav__link.active{
+        background: linear-gradient(180deg, rgba(37,99,235,.20), rgba(59,130,246,.10));
+        border-color: rgba(96,165,250,.52);
+        box-shadow: inset 0 0 0 1px rgba(125, 177, 255, .08);
+      }
+
+      .fc-side-nav__backdrop{
+        position: fixed;
+        inset: 0;
+        z-index: 1250;
+        background: rgba(0,0,0,.45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .22s ease;
+      }
+
+      .fc-side-nav__backdrop.show{
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      body.menu-open{
+        overflow: hidden;
+      }
     }
   </style>
 </head>
 
 <body>
+  <button class="fc-menu-toggle" id="fcMenuToggle" aria-label="Open menu">
+  ☰
+</button>
+
+<aside class="fc-side-nav" id="fcSideNav">
+  <div class="fc-side-nav__header">
+    <div class="fc-side-nav__title">FC26 Menu</div>
+    <button class="fc-side-nav__close" id="fcMenuClose" aria-label="Close menu">×</button>
+  </div>
+
+  <nav class="fc-side-nav__links">
+    <a href="/" class="fc-side-nav__link active">🏆 Leaderboard</a>
+
+    <a
+      href="https://docs.google.com/spreadsheets/d/1LOFuZ1zpEifeUcn20TSZ89Athfm75SAQfs9RgMhOGx4/edit?gid=2066599862#gid=2066599862"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fc-side-nav__link"
+    >
+      📊 H2H Records
+    </a>
+
+    <a
+      href="https://docs.google.com/spreadsheets/d/1LOFuZ1zpEifeUcn20TSZ89Athfm75SAQfs9RgMhOGx4/edit?gid=2066599862#gid=2066599862"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fc-side-nav__link"
+    >
+      ⚽ Match Sheet
+    </a>
+
+    <a
+      href="https://docs.google.com/spreadsheets/d/1LOFuZ1zpEifeUcn20TSZ89Athfm75SAQfs9RgMhOGx4/edit?gid=2066599862#gid=2066599862"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fc-side-nav__link"
+    >
+      🎁 Reward Announcement
+    </a>
+  </nav>
+</aside>
+
+<div class="fc-side-nav__backdrop" id="fcMenuBackdrop"></div>
   <div class="container">
     <div class="hero">
       <div class="eyebrow">
@@ -795,5 +966,27 @@
       el.style.background = hashColor(name || 'FC');
     });
   </script>
+  <script>
+  const fcMenuToggle = document.getElementById("fcMenuToggle");
+  const fcMenuClose = document.getElementById("fcMenuClose");
+  const fcSideNav = document.getElementById("fcSideNav");
+  const fcMenuBackdrop = document.getElementById("fcMenuBackdrop");
+
+  function openFcMenu() {
+    fcSideNav.classList.add("open");
+    fcMenuBackdrop.classList.add("show");
+    document.body.classList.add("menu-open");
+  }
+
+  function closeFcMenu() {
+    fcSideNav.classList.remove("open");
+    fcMenuBackdrop.classList.remove("show");
+    document.body.classList.remove("menu-open");
+  }
+
+  if (fcMenuToggle) fcMenuToggle.addEventListener("click", openFcMenu);
+  if (fcMenuClose) fcMenuClose.addEventListener("click", closeFcMenu);
+  if (fcMenuBackdrop) fcMenuBackdrop.addEventListener("click", closeFcMenu);
+</script>
 </body>
 </html>
