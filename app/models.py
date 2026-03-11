@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, LargeBinary
 from .db import Base
+
 
 class Team(Base):
     __tablename__ = "teams"
@@ -11,8 +12,10 @@ class Team(Base):
     d = Column(Integer, default=0)
     l = Column(Integer, default=0)
     f = Column(Integer, default=0)  # goals for
-    a = Column(Integer, default=0)  # goals against 
+    a = Column(Integer, default=0)  # goals against
 
     avatar_url = Column(String, nullable=True)
 
-    
+    # Persist uploaded avatars in DB so they survive Render redeploys
+    avatar_blob = Column(LargeBinary, nullable=True)
+    avatar_mime = Column(String, nullable=True)    

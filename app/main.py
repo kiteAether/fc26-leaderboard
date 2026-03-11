@@ -1,12 +1,12 @@
 import os
 import uuid
-import shutil
 from pathlib import Path
 
 from fastapi import FastAPI, Depends, HTTPException, Request, Form, Query, UploadFile, File
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 
 from .db import Base, engine, get_db
@@ -31,7 +31,23 @@ ALLOWED_IMAGE_TYPES = {
 }
 
 
-def save_uploaded_avatar(file: UploadFile | None) -> str | None:
+def ensure_avatar_columns():
+    inspector = inspect(engine)
+    existing_columns = {col["name"] for col in inspector.get_columns("teams")}
+
+    with engine.begin() as conn:
+        if "avatar_blob" not in existing_columns:
+            blob_type = "BYTEA" if engine.dialect.name == "postgresql" else "BLOB"
+            conn.execute(text(f"ALTER TABLE teams ADD COLUMN avatar_blob {blob_type}"))
+
+        if "avatar_mime" not in existing_columns:
+            conn.execute(text("ALTER TABLE teams ADD COLUMN avatar_mime VARCHAR(100)"))
+
+
+ensure_avatar_columns()
+
+
+def read_uploaded_avatar(file: UploadFile | None) -> tuple[bytes, str] | None:
     if not file or not file.filename:
         return None
 
@@ -41,14 +57,11 @@ def save_uploaded_avatar(file: UploadFile | None) -> str | None:
             detail="Only jpg, png, webp, and gif images are allowed",
         )
 
-    ext = ALLOWED_IMAGE_TYPES[file.content_type]
-    filename = f"{uuid.uuid4().hex}{ext}"
-    file_path = UPLOAD_DIR / filename
+    content = file.file.read()
+    if not content:
+        return None
 
-    with file_path.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    return f"/static/uploads/players/{filename}"
+    return content, file.content_type
 
 
 def compute_table(teams: list[models.Team]) -> list[dict]:
@@ -123,6 +136,10 @@ def require_admin(key: str | None):
         raise HTTPException(status_code=403, detail="Not authorized")
 
 
+def avatar_route_for(team_id: int) -> str:
+    return f"/api/teams/{team_id}/avatar?v={uuid.uuid4().hex}"
+
+
 # ---------- UI ----------
 @app.get("/", response_class=HTMLResponse)
 def leaderboard_page(request: Request, db: Session = Depends(get_db)):
@@ -165,14 +182,14 @@ def admin_add_team(
 ):
     require_admin(key)
 
-    uploaded_avatar_url = save_uploaded_avatar(avatar_file)
-    final_avatar_url = uploaded_avatar_url or (avatar_url.strip() if avatar_url else None)
+    cleaned_avatar_url = avatar_url.strip() if avatar_url else None
+    uploaded_avatar = read_uploaded_avatar(avatar_file)
 
-    crud.create_team(
+    team = crud.create_team(
         db,
         schemas.TeamCreate(
             name=name.strip(),
-            avatar_url=final_avatar_url,
+            avatar_url=cleaned_avatar_url,
             w=w,
             d=d,
             l=l,
@@ -180,6 +197,14 @@ def admin_add_team(
             a=a,
         ),
     )
+
+    if uploaded_avatar:
+        avatar_bytes, avatar_mime = uploaded_avatar
+        team.avatar_blob = avatar_bytes
+        team.avatar_mime = avatar_mime
+        team.avatar_url = avatar_route_for(team.id)
+        db.commit()
+
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
 
@@ -203,16 +228,15 @@ def admin_update_team(
     if not existing_team:
         raise HTTPException(status_code=404, detail="Team not found")
 
-    uploaded_avatar_url = save_uploaded_avatar(avatar_file)
+    uploaded_avatar = read_uploaded_avatar(avatar_file)
     cleaned_avatar_url = avatar_url.strip() if avatar_url else None
-    final_avatar_url = uploaded_avatar_url or cleaned_avatar_url
 
     team = crud.update_team(
         db,
         team_id,
         schemas.TeamUpdate(
             name=name.strip(),
-            avatar_url=final_avatar_url,
+            avatar_url=cleaned_avatar_url,
             w=w,
             d=d,
             l=l,
@@ -223,6 +247,28 @@ def admin_update_team(
 
     if not team:
         raise HTTPException(status_code=404, detail="Team not found")
+
+    if uploaded_avatar:
+        avatar_bytes, avatar_mime = uploaded_avatar
+        team.avatar_blob = avatar_bytes
+        team.avatar_mime = avatar_mime
+        team.avatar_url = avatar_route_for(team.id)
+        db.commit()
+        db.refresh(team)
+    else:
+        # If user manually switches to an external URL or clears it,
+        # remove DB-stored avatar so the source stays consistent.
+        if cleaned_avatar_url != existing_team.avatar_url:
+            if cleaned_avatar_url:
+                team.avatar_blob = None
+                team.avatar_mime = None
+                team.avatar_url = cleaned_avatar_url
+            elif existing_team.avatar_blob:
+                team.avatar_blob = None
+                team.avatar_mime = None
+                team.avatar_url = None
+            db.commit()
+            db.refresh(team)
 
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
@@ -246,13 +292,28 @@ async def admin_save_all(
             continue
 
         team.name = str(form.get(f"name_{team_id}", team.name)).strip()
+
         avatar_value = str(form.get(f"avatar_url_{team_id}", "")).strip()
-        team.avatar_url = avatar_value or None
+        previous_avatar_url = team.avatar_url
+
         team.w = int(form.get(f"w_{team_id}", 0) or 0)
         team.d = int(form.get(f"d_{team_id}", 0) or 0)
         team.l = int(form.get(f"l_{team_id}", 0) or 0)
         team.f = int(form.get(f"f_{team_id}", 0) or 0)
         team.a = int(form.get(f"a_{team_id}", 0) or 0)
+
+        if avatar_value:
+            team.avatar_url = avatar_value
+            # external URL overrides DB avatar
+            if not avatar_value.startswith(f"/api/teams/{team_id}/avatar"):
+                team.avatar_blob = None
+                team.avatar_mime = None
+        else:
+            # if user clears avatar_url field manually, clear avatar completely
+            if previous_avatar_url:
+                team.avatar_url = None
+                team.avatar_blob = None
+                team.avatar_mime = None
 
     db.commit()
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
@@ -303,6 +364,20 @@ def admin_delete_all(
     db.commit()
 
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
+
+
+# ---------- Avatar binary route ----------
+@app.get("/api/teams/{team_id}/avatar")
+def team_avatar(team_id: int, db: Session = Depends(get_db)):
+    team = db.query(models.Team).filter(models.Team.id == team_id).first()
+    if not team or not team.avatar_blob or not team.avatar_mime:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+
+    return Response(
+        content=team.avatar_blob,
+        media_type=team.avatar_mime,
+        headers={"Cache-Control": "public, max-age=31536000"},
+    )
 
 
 # ---------- API ----------
