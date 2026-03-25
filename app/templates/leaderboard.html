@@ -829,24 +829,6 @@
       >
         📊 H2H Records
       </a>
-
-      <!-- <a
-        href="https://docs.google.com/spreadsheets/d/1LOFuZ1zpEifeUcn20TSZ89Athfm75SAQfs9RgMhOGx4/edit?gid=2066599862#gid=2066599862"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="fc-side-nav__link"
-      >
-        ⚽ Match Sheet
-      </a>
-
-      <a
-        href="https://docs.google.com/spreadsheets/d/1LOFuZ1zpEifeUcn20TSZ89Athfm75SAQfs9RgMhOGx4/edit?gid=2066599862#gid=2066599862"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="fc-side-nav__link"
-      >
-        🎁 Reward Announcement
-      </a> -->
     </nav>
   </aside>
 
@@ -875,7 +857,7 @@
               {% if table[1].avatar_url %}
                 <img src="{{ table[1].avatar_url }}" alt="{{ table[1].name }}">
               {% else %}
-                <span class="initials">{{ (table[1].name[:2] if table[1].name else '?')|upper }}</span>
+                <span class="initials">{{ table[1].name[:2]|upper if table[1].name else '?' }}</span>
               {% endif %}
             </div>
           </div>
@@ -892,7 +874,7 @@
               {% if table[0].avatar_url %}
                 <img src="{{ table[0].avatar_url }}" alt="{{ table[0].name }}">
               {% else %}
-                <span class="initials">{{ (table[0].name[:2] if table[0].name else '?')|upper }}</span>
+                <span class="initials">{{ table[0].name[:2]|upper if table[0].name else '?' }}</span>
               {% endif %}
             </div>
           </div>
@@ -908,7 +890,7 @@
               {% if table[2].avatar_url %}
                 <img src="{{ table[2].avatar_url }}" alt="{{ table[2].name }}">
               {% else %}
-                <span class="initials">{{ (table[2].name[:2] if table[2].name else '?')|upper }}</span>
+                <span class="initials">{{ table[2].name[:2]|upper if table[2].name else '?' }}</span>
               {% endif %}
             </div>
           </div>
@@ -932,7 +914,7 @@
             {% if r.avatar_url %}
               <img src="{{ r.avatar_url }}" alt="{{ r.name }}">
             {% else %}
-              <span class="initials">{{ (r.name[:2] if r.name else '?')|upper }}</span>
+              <span class="initials">{{ r.name[:2]|upper if r.name else '?' }}</span>
             {% endif %}
           </div>
         </div>
