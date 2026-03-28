@@ -146,8 +146,9 @@ def leaderboard_page(request: Request, db: Session = Depends(get_db)):
     teams = crud.list_teams(db)
     table = compute_table(teams)
     return templates.TemplateResponse(
+        request,
         "leaderboard.html",
-        {"request": request, "table": table}
+        {"table": table},
     )
 
 
@@ -162,8 +163,9 @@ def admin_page(
     teams = crud.list_teams(db)
     table = compute_table(teams)
     return templates.TemplateResponse(
+        request,
         "admin.html",
-        {"request": request, "table": table, "key": key}
+        {"table": table, "key": key},
     )
 
 
