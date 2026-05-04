@@ -320,13 +320,13 @@ td.left{text-align:left}
             Save All
           </button>
 
-          <form method="post" action="/admin/clear-all?key={{ key }}">
+          <form method="post" action="/admin/reset-stats?key={{ key }}">
             <button
               type="submit"
-              class="btn"
-              onclick="return confirm('Reset all team stats to zero?')"
+              class="btn primary"
+              onclick="return confirm('Start new month? This will reset all stats to zero.')"
             >
-              Reset Stats
+              New Month Reset
             </button>
           </form>
 

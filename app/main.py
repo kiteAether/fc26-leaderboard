@@ -6,12 +6,12 @@ from fastapi import FastAPI, Depends, HTTPException, Request, Form, Query, Uploa
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import inspect, text
+
 from sqlalchemy.orm import Session
+from sqlalchemy import inspect, text
 
 from .db import Base, engine, get_db
-from . import models
-from . import crud, schemas
+from . import models, crud, schemas
 
 Base.metadata.create_all(bind=engine)
 
@@ -367,6 +367,23 @@ def admin_delete_all(
 
     return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
+@app.post("/admin/reset-stats")
+def reset_stats(
+    key: str = Query(None),
+    db: Session = Depends(get_db)
+):
+    require_admin(key)
+
+    teams = db.query(models.Team).all()
+    for t in teams:
+        t.w = 0
+        t.d = 0
+        t.l = 0
+        t.f = 0
+        t.a = 0
+
+    db.commit()
+    return RedirectResponse(url=f"/admin?key={key}", status_code=303)
 
 # ---------- Avatar binary route ----------
 @app.get("/api/teams/{team_id}/avatar")
@@ -410,3 +427,9 @@ def api_get_teams(db: Session = Depends(get_db)):
 @app.get("/api/leaderboard", response_model=list[schemas.TeamOut])
 def api_leaderboard(db: Session = Depends(get_db)):
     return api_get_teams(db)
+
+
+@app.get("/api/backup")
+def backup(db: Session = Depends(get_db)):
+    teams = crud.list_teams(db)
+    return teams
